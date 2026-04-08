@@ -1,24 +1,24 @@
 ---
 name: prompt-to-pr
-version: 1.2.0
+version: 1.3.0
 description: >
   Full AI-assisted development workflow — from a single prompt to a ready-to-merge PR.
   Activate when the user wants to build a feature, fix a bug, review code, refactor,
   add tests, or write documentation. Supports 6 modes: New Feature, Bug Fix, Code Review,
   Refactor, Test Coverage, Document. Manages context actively to stay within 200k tokens.
   Use this skill whenever the user says "implement", "add feature", "fix bug", "review code",
-  "refactor", "add tests", "document", "prompt-to-pr", "/p2p", or starts any development task.
+  "refactor", "add tests", "document", "prompt-to-pr", "/ptop", or starts any development task.
 tags: [workflow, development, feature, bugfix, review, refactor, testing, documentation, pr, git]
 always: false
 user-invocable: true
 invocation:
-  /p2p:              Start with mode selection menu
-  /p2p feature:      New Feature mode — prompt → plan → code → PR
-  /p2p fix:          Bug Fix mode — reproduce → root cause → fix → verify
-  /p2p review:       Code Review mode — structured analysis, read-only
-  /p2p refactor:     Refactor mode — clean code without changing behavior
-  /p2p test:         Test Coverage mode — gap analysis → write missing tests
-  /p2p docs:         Document mode — generate/update docs and comments
+  /ptop:              Start with mode selection menu
+  /ptop feature:      New Feature mode — prompt → plan → code → PR
+  /ptop fix:          Bug Fix mode — reproduce → root cause → fix → verify
+  /ptop review:       Code Review mode — structured analysis, read-only
+  /ptop refactor:     Refactor mode — clean code without changing behavior
+  /ptop test:         Test Coverage mode — gap analysis → write missing tests
+  /ptop docs:         Document mode — generate/update docs and comments
 ---
 
 # prompt-to-pr — Full Development Workflow
@@ -36,13 +36,13 @@ Type any of these commands to activate prompt-to-pr:
 
 | Command | Action |
 |---|---|
-| `/p2p` | Show mode selection menu |
-| `/p2p feature` | Start New Feature mode directly |
-| `/p2p fix` | Start Bug Fix mode directly |
-| `/p2p review` | Start Code Review mode directly |
-| `/p2p refactor` | Start Refactor mode directly |
-| `/p2p test` | Start Test Coverage mode directly |
-| `/p2p docs` | Start Document mode directly |
+| `/ptop` | Show mode selection menu |
+| `/ptop feature` | Start New Feature mode directly |
+| `/ptop fix` | Start Bug Fix mode directly |
+| `/ptop review` | Start Code Review mode directly |
+| `/ptop refactor` | Start Refactor mode directly |
+| `/ptop test` | Start Test Coverage mode directly |
+| `/ptop docs` | Start Document mode directly |
 
 You can also trigger the skill by describing what you want:
 

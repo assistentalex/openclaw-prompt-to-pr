@@ -43,19 +43,19 @@ clawhub install prompt-to-pr
 
 ## Usage
 
-### Start with `/p2p`
+### Start with `/ptop`
 
-Type `/p2p` to see the mode selection menu, or use a direct command:
+Type `/ptop` to see the mode selection menu, or use a direct command:
 
 | Command | Mode |
 |---|---|
-| `/p2p` | Mode selection menu |
-| `/p2p feature` | 🚀 New Feature |
-| `/p2p fix` | 🐛 Bug Fix |
-| `/p2p review` | 🔍 Code Review |
-| `/p2p refactor` | ♻️ Refactor |
-| `/p2p test` | 🧪 Test Coverage |
-| `/p2p docs` | 📖 Document |
+| `/ptop` | Mode selection menu |
+| `/ptop feature` | 🚀 New Feature |
+| `/ptop fix` | 🐛 Bug Fix |
+| `/ptop review` | 🔍 Code Review |
+| `/ptop refactor` | ♻️ Refactor |
+| `/ptop test` | 🧪 Test Coverage |
+| `/ptop docs` | 📖 Document |
 
 You can also describe what you want to do:
 
