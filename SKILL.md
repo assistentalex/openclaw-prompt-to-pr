@@ -1,16 +1,24 @@
 ---
 name: prompt-to-pr
-version: 1.1.0
+version: 1.2.0
 description: >
   Full AI-assisted development workflow — from a single prompt to a ready-to-merge PR.
   Activate when the user wants to build a feature, fix a bug, review code, refactor,
   add tests, or write documentation. Supports 6 modes: New Feature, Bug Fix, Code Review,
   Refactor, Test Coverage, Document. Manages context actively to stay within 200k tokens.
   Use this skill whenever the user says "implement", "add feature", "fix bug", "review code",
-  "refactor", "add tests", "document", "prompt-to-pr", or starts any development task.
+  "refactor", "add tests", "document", "prompt-to-pr", "/p2p", or starts any development task.
 tags: [workflow, development, feature, bugfix, review, refactor, testing, documentation, pr, git]
 always: false
 user-invocable: true
+invocation:
+  /p2p:              Start with mode selection menu
+  /p2p feature:      New Feature mode — prompt → plan → code → PR
+  /p2p fix:          Bug Fix mode — reproduce → root cause → fix → verify
+  /p2p review:       Code Review mode — structured analysis, read-only
+  /p2p refactor:     Refactor mode — clean code without changing behavior
+  /p2p test:         Test Coverage mode — gap analysis → write missing tests
+  /p2p docs:         Document mode — generate/update docs and comments
 ---
 
 # prompt-to-pr — Full Development Workflow
@@ -19,6 +27,31 @@ You are an AI development partner. This skill orchestrates the full cycle from u
 to a ready-to-merge Pull Request, with explicit approval checkpoints and active context management.
 
 **Read this file fully before starting. Never skip phases.**
+
+---
+
+## INVOCATION — How to start
+
+Type any of these commands to activate prompt-to-pr:
+
+| Command | Action |
+|---|---|
+| `/p2p` | Show mode selection menu |
+| `/p2p feature` | Start New Feature mode directly |
+| `/p2p fix` | Start Bug Fix mode directly |
+| `/p2p review` | Start Code Review mode directly |
+| `/p2p refactor` | Start Refactor mode directly |
+| `/p2p test` | Start Test Coverage mode directly |
+| `/p2p docs` | Start Document mode directly |
+
+You can also trigger the skill by describing what you want:
+
+- "implement login page" → 🚀 New Feature
+- "fix the payment crash" → 🐛 Bug Fix
+- "review the auth module" → 🔍 Code Review
+- "refactor the database layer" → ♻️ Refactor
+- "write tests for utils.py" → 🧪 Test Coverage
+- "document the API endpoints" → 📖 Document
 
 ---
 

@@ -43,7 +43,21 @@ clawhub install prompt-to-pr
 
 ## Usage
 
-Just describe what you want to do. The skill auto-detects the mode from your message:
+### Start with `/p2p`
+
+Type `/p2p` to see the mode selection menu, or use a direct command:
+
+| Command | Mode |
+|---|---|
+| `/p2p` | Mode selection menu |
+| `/p2p feature` | 🚀 New Feature |
+| `/p2p fix` | 🐛 Bug Fix |
+| `/p2p review` | 🔍 Code Review |
+| `/p2p refactor` | ♻️ Refactor |
+| `/p2p test` | 🧪 Test Coverage |
+| `/p2p docs` | 📖 Document |
+
+You can also describe what you want to do:
 
 ```
 "Implement a login page"       → 🚀 New Feature
