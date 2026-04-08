@@ -1,6 +1,6 @@
 ---
 name: prompt-to-pr
-version: 1.0.0
+version: 1.1.0
 description: >
   Full AI-assisted development workflow — from a single prompt to a ready-to-merge PR.
   Activate when the user wants to build a feature, fix a bug, review code, refactor,
@@ -110,6 +110,36 @@ Every mode has exactly **2 hard stops** requiring explicit user approval in chat
 - After VERIFY before PR/commit
 
 Never proceed past a checkpoint on assumption. Wait for: "yes", "ok", "approved", "go", "da", "merge".
+
+### Undo at checkpoints
+When the user rejects at a checkpoint (says "no", "nu", "reject", "request changes"):
+
+1. **If before IMPLEMENT** — no files changed, just move to next mode or adjust plan.
+2. **If after IMPLEMENT (CHECKPOINT 2)** — files are modified on disk. Restore cleanly:
+   ```bash
+   # At the start of IMPLEMENT, always create a stash snapshot:
+   git stash push -m "p2p-checkpoint-backup" --include-untracked
+
+   # If user rejects at CHECKPOINT 2:
+   git checkout .                           # discard tracked changes
+   git clean -fd                            # remove untracked files (optional, ask first)
+   git stash pop                             # restore pre-implementation state
+   git branch -d <current-branch>           # delete the feature branch
+   ```
+
+3. **Always stash before IMPLEMENT** — this is now mandatory. Add this step to every mode's IMPLEMENT phase:
+   - Before writing any file: `git stash push -m "p2p-checkpoint-backup" --include-untracked`
+   - After CHECKPOINT 2 approved: `git stash drop`
+   - After CHECKPOINT 2 rejected: `git checkout . && git stash pop`
+
+4. **Ask what to do** — rejection doesn't always mean full undo. Options to offer:
+   ```
+   You rejected the changes. What would you like to do?
+   
+   A) Full undo — revert all files to pre-implementation state
+   B) Keep changes — stay on this branch, I'll modify manually
+   C) Partial — tell me which files to keep and which to revert
+   ```
 
 ### Abort at any time
 If user says "abort", "stop", "cancel", "renunță":
