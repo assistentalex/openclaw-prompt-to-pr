@@ -63,9 +63,31 @@ To resume: "resume prompt-to-pr"
 
 ---
 
-## How to Estimate Token Usage
+## How to Track Real Token Usage
 
-Use these rough multipliers when reading files:
+**Always use real token counts, never estimates.**
+
+At the start of every phase, call `session_status` to get actual token usage:
+
+```
+session_status → look for "Tokens: Xk in" line
+```
+
+Use the `Xk` value as your current context usage. Calculate the percentage
+against the total budget (default 200k, or custom if specified).
+
+### Why real counts?
+- Estimates are unreliable — a 10KB file can be 2k or 5k tokens depending on content
+- Cumulative context includes all prior conversation, not just files you read
+- Resetting the counter between cycles is WRONG — context accumulates
+
+### Accumulation rule
+Context tokens only go UP. Never reset the counter.
+If you start a new /ptop cycle, context from the previous cycle is still there.
+Banner at cycle start should reflect accumulated total, not zero.
+
+### Fallback (if session_status unavailable)
+Use these rough multipliers only as last resort:
 
 | Content type | Tokens per line |
 |---|---|

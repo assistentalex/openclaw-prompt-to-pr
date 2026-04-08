@@ -1,6 +1,6 @@
 ---
 name: prompt-to-pr
-version: 1.3.0
+version: 1.4.0
 description: >
   Full AI-assisted development workflow — from a single prompt to a ready-to-merge PR.
   Activate when the user wants to build a feature, fix a bug, review code, refactor,
@@ -136,6 +136,10 @@ Display at every phase transition:
 ```
 [FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: ███░░░░░░░  62k/200k (31%)
 ```
+
+**IMPORTANT:** Token count must come from `session_status`, never estimated.
+Call `session_status` at the START of every phase and use the real `Tokens: Xk in` value.
+Context accumulates — never reset the counter between phases or cycles.
 
 ### Approval checkpoints
 Every mode has exactly **2 hard stops** requiring explicit user approval in chat.
