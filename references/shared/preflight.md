@@ -31,7 +31,43 @@ Then restart prompt-to-pr.
 
 ---
 
-## Check 2 — Test suite
+## Check 2 — Repo discovery
+
+**This check MUST run before test suite and coverage checks,** because the selected
+repo determines which directory to scan for tests.
+
+### Auto-detect first, ask only when ambiguous
+
+1. If user specified `--repo <path>` or mentioned a project name → use that repo directly.
+2. If only one git repo is found → use it silently, **do not ask**.
+3. If multiple repos are found → **do NOT show a separate repo menu here.** Instead, pass
+   the repo list to the Mode Triage (§2) which will show a single unified menu
+   combining mode + repo selection. This avoids asking the user two separate questions.
+
+Scan for candidate repos:
+
+1. **Workspace git repos** — check if the current workspace has a `.git` directory
+2. **Installed skill repos** — scan `~/.openclaw/skills/` and `~/.npm-global/lib/node_modules/openclaw/skills/` for directories with `.git`
+3. **GitHub repos** — if `gh` CLI is available, list recent repos with `gh repo list --limit 10`
+
+For each candidate, detect: language, test framework, and rough test count.
+
+- ✅ Single repo → proceed silently (use it, no question)
+- ✅ Multiple repos → pass list to Mode Triage for unified menu
+- ❌ No repos found → **HARD STOP**
+
+```
+🔴 STOP — No repos found.
+
+prompt-to-pr needs a Git repository to work in. Either:
+  - Run /ptop from inside a Git repo
+  - Specify --repo <path>
+  - Clone a repo first: git clone <url>
+```
+
+---
+
+## Check 3 — Test suite
 
 Look for any of the following (in order of priority):
 
@@ -69,7 +105,7 @@ Add at least one smoke test, then restart prompt-to-pr.
 
 ---
 
-## Check 3 — Coverage tool (soft)
+## Check 4 — Coverage tool (soft)
 
 Check if a coverage tool exists (nyc, c8, pytest-cov, go cover, etc.).
 
@@ -84,7 +120,7 @@ Install a coverage tool to get gap analysis. Continuing.
 
 ---
 
-## Check 4 — CLAUDE.md (soft)
+## Check 5 — CLAUDE.md (soft)
 
 ```bash
 ls CLAUDE.md 2>/dev/null || ls .claude/CLAUDE.md 2>/dev/null
@@ -101,7 +137,7 @@ Consider creating CLAUDE.md to persist conventions across sessions.
 
 ---
 
-## Check 5 — hardshell (soft)
+## Check 6 — hardshell (soft)
 
 Check if `hardshell` skill is installed:
 ```bash
@@ -124,17 +160,18 @@ Install hardshell for enhanced security and architecture rules.
 Always display before continuing:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   prompt-to-pr — PREFLIGHT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Repo             ✅  ~/.openclaw/skills/prompt-to-pr
   Git              ✅
   Test suite       ✅  (jest)
   Coverage tool    ✅  (nyc)
   CLAUDE.md        ⚠️  not found
   hardshell        ⚠️  not installed
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Status: READY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 Or if hard stop:

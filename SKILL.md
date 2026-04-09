@@ -1,6 +1,6 @@
 ---
 name: prompt-to-pr
-version: 1.4.0
+version: 1.5.0
 description: >
   Full AI-assisted development workflow — from a single prompt to a ready-to-merge PR.
   Activate when the user wants to build a feature, fix a bug, review code, refactor,
@@ -19,6 +19,8 @@ invocation:
   /ptop refactor:     Refactor mode — clean code without changing behavior
   /ptop test:         Test Coverage mode — gap analysis → write missing tests
   /ptop docs:         Document mode — generate/update docs and comments
+  /ptop --repo PATH:  Specify which Git repo to work in
+  /ptop --repo ?:     Show repo selection menu (scan skills + workspace)
 ---
 
 # prompt-to-pr — Full Development Workflow
@@ -59,6 +61,16 @@ You can also trigger the skill by describing what you want:
 
 Load `references/shared/preflight.md` and execute all checks before anything else.
 
+### Repo selection
+
+**Auto-detect first, ask only when ambiguous.**
+
+1. If user specified `--repo <path>` or mentioned a project name → use that repo directly.
+2. If only one git repo is found (workspace root or single skill) → use it silently, no question.
+3. If multiple repos are found → include repo in the unified mode menu (see §2), NOT as a separate question.
+
+The selected repo becomes the **project root** — all subsequent commands run from that directory.
+
 Hard stops (do not continue if these fail):
 - Git not initialized → STOP, explain what's missing
 - No test suite detected → STOP, recommend minimum setup
@@ -88,6 +100,8 @@ Display budget banner after scan:
 
 ### Auto-detect from user message
 
+If the user's message contains intent keywords, route directly — no menu needed:
+
 | If user said | Route to |
 |---|---|
 | "implement", "add", "build", "create feature" | 🚀 New Feature |
@@ -97,20 +111,44 @@ Display budget banner after scan:
 | "test", "coverage", "missing tests", "write tests" | 🧪 Test Coverage |
 | "document", "docs", "readme", "docstring", "comments" | 📖 Document |
 
-### If unclear — show menu
+When intent is detected AND repo is clear → skip the menu entirely, go straight to §3.
 
+### If unclear — show unified menu
+
+When `/ptop` is called without a clear mode (or mode+repo are both ambiguous),
+show ONE combined menu — never two separate questions:
+
+**Single repo (auto-detected):**
 ```
-👋 prompt-to-pr ready. What would you like to do?
+🚀 prompt-to-pr — ce facem?
 
-  🚀 [1] New Feature    — prompt → plan → code → PR
-  🐛 [2] Bug Fix        — reproduce → root cause → fix → verify
-  🔍 [3] Code Review    — analyze existing code, structured report
-  ♻️ [4] Refactor       — clean code without changing behavior
-  🧪 [5] Test Coverage  — gap analysis → write missing tests
-  📖 [6] Document       — generate/update docs and comments
+  [1] Feature      [4] Refactor
+  [2] Bug Fix       [5] Tests
+  [3] Review        [6] Docs
+
+  Repo: ~/.openclaw/skills/imm-romania (auto-detected)
 
   Type a number or describe what you need.
 ```
+
+**Multiple repos:**
+```
+🚀 prompt-to-pr — ce facem și unde?
+
+  [1] Feature      [4] Refactor
+  [2] Bug Fix       [5] Tests
+  [3] Review        [6] Docs
+
+  Repos:
+    [a] ~/.openclaw/skills/imm-romania     (Python, pytest)
+    [b] ~/.openclaw/skills/prompt-to-pr   (Markdown)
+    [c] ~/.openclaw/workspace/openclaw-hardshell
+
+  Type e.g. "1a" or describe what you need.
+```
+
+**Key rule:** Never ask two separate questions when one will do. Prefer zero questions
+when intent + repo are both clear from context.
 
 ---
 

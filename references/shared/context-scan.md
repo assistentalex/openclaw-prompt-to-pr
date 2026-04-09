@@ -8,15 +8,16 @@ Budget for this phase: 40k tokens max.
 
 ## Step 1 — Map (cheap, ~2k tokens)
 
-Get the full file tree without reading content:
+Get the full file tree without reading content.
+Run from the **project root** (selected repo), not necessarily CWD:
 
 ```bash
-git ls-files | head -200
+cd {PROJECT_ROOT} && git ls-files | head -200
 ```
 
 If no git:
 ```bash
-find . -type f \
+cd {PROJECT_ROOT} && find . -type f \
   -not -path '*/node_modules/*' \
   -not -path '*/.git/*' \
   -not -path '*/dist/*' \
@@ -25,6 +26,9 @@ find . -type f \
   -not -path '*/.venv/*' \
   | sort | head -200
 ```
+
+Where `{PROJECT_ROOT}` is the repo selected during preflight (or specified via `--repo`).
+All subsequent commands in context scan also run from `{PROJECT_ROOT}`.
 
 From the file tree, identify:
 - Primary language(s)
