@@ -11,6 +11,7 @@ CHANGELOG = ROOT / "CHANGELOG.md"
 PREFLIGHT = ROOT / "references" / "shared" / "preflight.md"
 CONTEXT_SCAN = ROOT / "references" / "shared" / "context-scan.md"
 REPO_SELECTION = ROOT / "references" / "shared" / "repo-selection.md"
+REPO_REGISTRY = ROOT / "references" / "shared" / "repo-registry.md"
 MODE_POLICY = ROOT / "references" / "shared" / "mode-policy.md"
 STATE_SYSTEM = ROOT / "references" / "shared" / "state-system.md"
 CLARIFY = ROOT / "references" / "shared" / "clarify.md"
@@ -45,6 +46,7 @@ def test_references_directory_exists():
 def test_shared_policy_files_exist():
     """Verify shared policy files exist for deduplicated rules."""
     assert REPO_SELECTION.is_file(), f"Missing {REPO_SELECTION}"
+    assert REPO_REGISTRY.is_file(), f"Missing {REPO_REGISTRY}"
     assert MODE_POLICY.is_file(), f"Missing {MODE_POLICY}"
     assert STATE_SYSTEM.is_file(), f"Missing {STATE_SYSTEM}"
     assert CLARIFY.is_file(), f"Missing {CLARIFY}"
@@ -64,14 +66,18 @@ def test_preflight_has_repo_selection_section():
     assert "## Check 2 — Repo selection" in content
     assert "references/shared/repo-selection.md" in content
     assert "avoid broad startup discovery" in content
+    assert "references/shared/repo-registry.md" in content
 
 
 def test_repo_selection_policy_prefers_explicit_or_current_repo():
     """Verify the canonical repo-selection policy prefers explicit/local selection."""
     content = REPO_SELECTION.read_text()
-    assert "Be explicit first, local second, ask directly otherwise" in content
-    assert "current working directory is already inside a git repo" in content
-    assert "Never" in content
+    assert "explicit `--repo` wins" in content
+    assert "current repo is the only implicit default" in content
+    assert "Be explicit first, then use current repo, then consult the registry, then ask directly" in content
+    assert "Alias match" in content
+    assert "Recent repos" in content
+    assert "Bounded local discovery" in content
 
 
 def test_preflight_repo_selection_is_direct_not_discovery_heavy():
@@ -80,6 +86,7 @@ def test_preflight_repo_selection_is_direct_not_discovery_heavy():
     assert "accept `--repo <path>` immediately when provided" in content
     assert "ask the user directly for a repo path" in content
     assert "installed skills, bundled skills, or GitHub" in content
+    assert "references/shared/repo-registry.md" in content
 
 
 def test_mode_policy_matrix_covers_all_modes():
@@ -87,7 +94,6 @@ def test_mode_policy_matrix_covers_all_modes():
     content = MODE_POLICY.read_text()
     for label in ["🚀 Feature", "🐛 Bug Fix", "♻️ Refactor", "🧪 Test Coverage", "🔍 Review", "📖 Document", "🗨️ PR Feedback"]:
         assert label in content
-
 
 
 def test_preflight_test_suite_check_is_mode_aware():
@@ -111,6 +117,7 @@ def test_skill_references_canonical_policy_files():
     assert "references/shared/pr-feedback-format.md" in content
     assert "references/shared/release-readiness.md" in content
     assert "references/shared/delegation.md" in content
+    assert "references/shared/repo-registry.md" in content
     assert "tasks/state.json" in content
     assert "Git not initialized → STOP" in content
 
@@ -132,7 +139,9 @@ def test_readme_is_aligned_with_ptopr_and_repo_selection_flow():
     assert "/ptopr" in content
     assert "/ptopr --repo /path/to/repo" in content
     assert "PR Feedback" in content
-    assert "asks directly for a repo path" in content
+    assert "shows a repo selection menu" in content
+    assert "known repos from the registry" in content
+    assert "bounded local discovery" in content
     assert "scan skills + workspace" not in content
     bare_ptop = re.findall(r"/ptop(?!r)\b", content)
     assert len(bare_ptop) == 0, f"Found old /ptop references in README: {bare_ptop}"
@@ -156,7 +165,6 @@ def test_context_scan_uses_project_root():
     assert "{PROJECT_ROOT}" in content, "PROJECT_ROOT placeholder not found in context-scan.md"
 
 
-
 def test_context_budget_and_policy_avoid_claiming_exact_model_truth():
     """Verify context docs frame budgets as operational, not absolute truth."""
     budget = (ROOT / "references" / "shared" / "context-budget.md").read_text()
@@ -172,8 +180,19 @@ def test_repo_selection_policy_has_local_fallback_rules():
     content = REPO_SELECTION.read_text()
     assert "Fallback rules" in content
     assert "If shell access is restricted" in content
-    assert "do not search broadly; ask for a repo path" in content
+    assert "do not search broadly; use the registry or ask for a repo path" in content
     assert "unknown fields" in content
+
+
+def test_repo_registry_file_exists():
+    """Verify the repo registry reference document exists."""
+    content = REPO_REGISTRY.read_text()
+    assert "# Repo Registry Design" in content
+    assert "~/.openclaw/workspace/prompt-to-pr-repo-registry.json" in content
+    assert "roots" in content
+    assert "aliases" in content
+    assert "recentRepos" in content
+    assert "lastActiveRepo" in content
 
 
 def test_review_mode_mentions_missing_tests_are_warning_only():
@@ -198,7 +217,6 @@ def test_all_modes_note_phase_numbers_are_local_except_shared_steps():
         assert "references/shared/state-system.md" in content, f"Missing state-system reference in {path.name}"
 
 
-
 def test_plan_format_mentions_state_json_and_clarify_summary():
     """Verify plan-format includes durable state and clarify sections."""
     content = (ROOT / "references" / "shared" / "plan-format.md").read_text()
@@ -207,7 +225,6 @@ def test_plan_format_mentions_state_json_and_clarify_summary():
     assert "## Plan Metadata" in content
     assert "Fast Path: yes / no" in content
     assert "references/shared/state-system.md" in content
-
 
 
 def test_state_system_defines_resume_contract():
@@ -220,7 +237,6 @@ def test_state_system_defines_resume_contract():
     assert "Pressure-triggered minimum update set" in content
 
 
-
 def test_clarify_doc_limits_questions_and_requires_persistence():
     """Verify clarify guidance is bounded and persisted."""
     content = CLARIFY.read_text()
@@ -229,14 +245,12 @@ def test_clarify_doc_limits_questions_and_requires_persistence():
     assert "tasks/todo.md" in content
 
 
-
 def test_fast_path_doc_requires_low_risk_and_durable_state():
     """Verify fast path remains safe and resumable."""
     content = FAST_PATH.read_text()
     assert "risk is LOW" in content
     assert "tasks/state.json" in content
     assert "Exit rule" in content
-
 
 
 def test_review_presets_doc_lists_core_presets():
@@ -254,7 +268,6 @@ def test_review_presets_doc_lists_core_presets():
         assert phrase in content
 
 
-
 def test_review_mode_uses_review_presets():
     """Verify review mode loads and presents the preset menu."""
     content = (ROOT / "references" / "modes" / "review.md").read_text()
@@ -263,13 +276,11 @@ def test_review_mode_uses_review_presets():
     assert "[7] Architecture smells" in content
 
 
-
 def test_mode_policy_mentions_fast_path_rules():
     """Verify mode policy references fast-path handling."""
     content = MODE_POLICY.read_text()
     assert "references/shared/fast-path.md" in content
     assert "Review mode does not use the implementation fast path" in content
-
 
 
 def test_context_policy_defines_next_step_and_red_vs_critical_behavior():
@@ -284,7 +295,6 @@ def test_context_policy_defines_next_step_and_red_vs_critical_behavior():
     assert "nextAction" in content
 
 
-
 def test_skill_references_context_policy_and_adaptive_monitoring():
     """Verify SKILL.md uses context-policy and adaptive wording."""
     content = SKILL.read_text()
@@ -293,7 +303,6 @@ def test_skill_references_context_policy_and_adaptive_monitoring():
     assert "next-step size" in content
     assert "Do not treat red as an automatic stop" in content
     assert "set `nextAction`, and stop" in content
-
 
 
 def test_pr_feedback_mode_exists_and_references_shared_docs():
@@ -306,7 +315,6 @@ def test_pr_feedback_mode_exists_and_references_shared_docs():
     assert "UNCLEAR" in content
 
 
-
 def test_release_readiness_and_delegation_docs_exist_with_core_rules():
     """Verify release-readiness and delegation docs include core guidance."""
     release = RELEASE_READINESS.read_text()
@@ -317,13 +325,11 @@ def test_release_readiness_and_delegation_docs_exist_with_core_rules():
     assert "Do not delegate" in delegation
 
 
-
 def test_feature_bugfix_refactor_reference_release_readiness():
     """Verify ship-affecting modes reference release-readiness summary."""
     for name in ["feature.md", "bugfix.md", "refactor.md"]:
         content = (ROOT / "references" / "modes" / name).read_text()
         assert "references/shared/release-readiness.md" in content, f"Missing release-readiness in {name}"
-
 
 
 def test_pr_modes_use_consistent_checkpoint_2_wording():
