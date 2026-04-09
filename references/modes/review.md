@@ -2,7 +2,7 @@
 
 **Flow:** Scan scope → Analyze → Structured report
 
-**Phase banner mandatory:** Display `[FAZA N/M — ...]` banner as the FIRST action of every phase. See ⛔ MANDATORY in SKILL.md.
+**Phase banner mandatory:** Display `[FAZA N/M — ...]` banner at the start of EVERY assistant turn during the workflow — not just at phase starts. See ⛔ MANDATORY in SKILL.md.
 
 **This mode is READ-ONLY. No code is modified. No commits. No PR.**
 

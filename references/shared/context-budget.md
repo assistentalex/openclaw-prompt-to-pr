@@ -105,7 +105,7 @@ Example: a 10KB file ≈ 2,500 tokens
 
 ## Budget Banner Format
 
-Display at every phase transition:
+Display at the start of EVERY assistant turn during the ptop workflow — not just phase transitions. The user must always see budget status. Every message starts with the banner, no exceptions:
 
 ```
 [FAZA 3/6 — IMPLEMENT 🚀 New Feature]  Context: ███████░░░  140k/200k (70%) 🟡

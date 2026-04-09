@@ -36,11 +36,11 @@ to a ready-to-merge Pull Request, with explicit approval checkpoints and active 
 
 These rules are non-negotiable. Violating any of them is a bug in your execution, not a creative choice.
 
-1. **Phase banner before phase work.** At the start of EVERY numbered phase (Preflight, Context Scan, Plan, Implement, Test, Verify, PR), call `session_status`, get the real token count, and display the banner:
+1. **Context banner in EVERY assistant turn.** During the entire ptop workflow, EVERY response the assistant sends must begin with the context banner — not just at phase starts. Call `session_status`, get the real token count, and display:
    ```
    [FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: ████░░░░░░  Xk/200k (YY%)
    ```
-   This is the FIRST action in any phase. Not the second. Not after reading files. **First.**
+   This applies to all turns: questions, plan presentations, code output, checkpoint prompts, test results, verify summaries. The user must always see budget status. **First line of every message, no exceptions.**
 
 2. **Real token counts only.** Never estimate. Never guess. Never use a cached value. Call `session_status` and use the `Tokens: Xk in` value from the result.
 

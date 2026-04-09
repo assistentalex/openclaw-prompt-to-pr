@@ -2,7 +2,7 @@
 
 **Flow:** Baseline tests → Analyze → Plan → ⛔ APPROVE → Implement → Tests must match baseline → ⛔ APPROVE → PR
 
-**Phase banner mandatory:** Display `[FAZA N/M — ...]` banner as the FIRST action of every phase. See ⛔ MANDATORY in SKILL.md.
+**Phase banner mandatory:** Display `[FAZA N/M — ...]` banner at the start of EVERY assistant turn during the workflow — not just at phase starts. See ⛔ MANDATORY in SKILL.md.
 
 Core constraint: **zero behavior change**.
 The test suite is the safety net. If any test breaks, the refactor is wrong — not the test.

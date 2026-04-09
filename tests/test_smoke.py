@@ -90,7 +90,7 @@ def test_mandatory_rules_in_skill():
     """Verify the 3 mandatory rules are present in SKILL.md."""
     skill = Path(__file__).resolve().parent.parent / "SKILL.md"
     content = skill.read_text()
-    assert "Phase banner before phase work" in content, "Rule 1 (phase banner) not found"
+    assert "Context banner in EVERY assistant turn" in content, "Rule 1 (per-turn banner) not found"
     assert "Real token counts only" in content, "Rule 2 (real tokens) not found"
     assert "Checkpoints are hard stops" in content, "Rule 3 (checkpoints) not found"
 
@@ -120,3 +120,13 @@ def test_phase_banner_references_mandatory_section():
     content = skill.read_text()
     assert "See ⛔ MANDATORY" in content, \
         "Phase banner section does not reference ⛔ MANDATORY block"
+
+
+def test_per_turn_banner_rule():
+    """Verify SKILL.md mandates context banner in every assistant turn."""
+    skill = Path(__file__).resolve().parent.parent / "SKILL.md"
+    content = skill.read_text()
+    assert "every assistant turn" in content.lower(), \
+        "Per-turn banner rule not found in SKILL.md"
+    assert "no exceptions" in content.lower(), \
+        "'No exceptions' clause not found for per-turn banner rule"
