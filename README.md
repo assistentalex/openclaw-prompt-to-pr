@@ -71,7 +71,7 @@ You can also describe what you want to do:
 "Address PR comments"          → 🗨️ PR Feedback
 ```
 
-If the repo is unclear, the skill asks directly for a repo path instead of scanning broadly.
+If the repo is unclear, the skill shows a repo selection menu (using known repos from the registry and bounded local discovery) instead of scanning broadly.
 If the intent is unclear but the repo is already clear, it shows the mode menu.
 
 ### Workflow Overview

@@ -36,11 +36,12 @@ Then restart prompt-to-pr.
 **This check MUST run before test suite and coverage checks,** because the selected
 repo determines which directory to scan for tests.
 
-Load `references/shared/repo-selection.md` and follow it as the canonical repo-selection policy.
+Load `references/shared/repo-selection.md` and `references/shared/repo-registry.md` and follow them as the canonical repo-selection policy.
 At minimum, preflight must:
 - accept `--repo <path>` immediately when provided
 - prefer the current git repo when the command is already running inside one
-- ask the user directly for a repo path when the repo is still unclear
+- otherwise, use the repo registry (aliases, recents, bounded discovery) to suggest a repo
+- ask the user directly for a repo path when the registry does not yield a clear repo
 - avoid broad startup discovery across installed skills, bundled skills, or GitHub
 
 ```
@@ -170,9 +171,9 @@ Always display before continuing:
   Coverage tool    ✅  (nyc)
   CLAUDE.md        ⚠️  not found
   hardshell        ⚠️  not installed
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Status: READY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 Or if hard stop:
