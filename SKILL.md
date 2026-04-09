@@ -79,20 +79,17 @@ Load `references/shared/preflight.md` and execute all checks before anything els
 
 ### Repo selection
 
-**Auto-detect first, ask only when ambiguous.**
-
-1. If user specified `--repo <path>` or mentioned a project name → use that repo directly.
-2. If only one git repo is found (workspace root or single skill) → use it silently, no question.
-3. If multiple repos are found → include repo in the unified mode menu (see §2), NOT as a separate question.
-
+Load `references/shared/repo-selection.md` and follow it as the canonical repo-selection policy.
 The selected repo becomes the **project root** — all subsequent commands run from that directory.
 
-Hard stops (do not continue if these fail):
-- Git not initialized → STOP, explain what's missing
-- No test suite detected → STOP, recommend minimum setup
-- Context budget cannot be determined → assume 200k, warn user
+### Mode policy
 
-Soft warnings (continue with visible warning):
+Load `references/shared/mode-policy.md` and follow it as the canonical strictness matrix.
+Use it to decide when missing tests are a hard stop versus a warning, and when coverage tooling is mandatory.
+
+Shared preflight reminders:
+- Git not initialized → STOP, explain what's missing
+- Context budget cannot be determined → assume 200k, warn user
 - No CLAUDE.md → warn, continue
 - hardshell not installed → note it, continue without it
 
@@ -132,7 +129,7 @@ When intent is detected AND repo is clear → skip the menu entirely, go straigh
 ### If unclear — show unified menu
 
 When `/ptopr` is called without a clear mode (or mode+repo are both ambiguous),
-show ONE combined menu — never two separate questions:
+show ONE combined menu — never two separate questions and never a separate "pick repo first" follow-up:
 
 **Single repo (auto-detected):**
 ```

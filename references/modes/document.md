@@ -2,8 +2,11 @@
 
 **Flow:** Scan gaps → Prioritize → Plan → ⛔ APPROVE → Write docs → Verify accuracy → ⛔ APPROVE → PR
 
+**Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared PREFLIGHT and CONTEXT SCAN steps.
+
 Core principle: **documentation describes what code does, not what you wish it did.**
 If the code is unclear, ask — never invent behavior.
+**Preflight note:** missing tests are a warning in this mode, not a blocker. If the work expands from documentation-only into behavior-changing edits, stop and require a minimal test suite first.
 
 ---
 
@@ -249,7 +252,7 @@ For every documentation item written:
 
   Files changed: 4
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ⛔ CHECKPOINT 2 — Approve PR?
+  ⛔ CHECKPOINT 2 — Approve to create PR?
   Reply: yes / request changes / abort
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```

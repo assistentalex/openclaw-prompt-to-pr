@@ -1,6 +1,8 @@
 # Mode: ♻️ Refactor
 
-**Flow:** Baseline tests → Analyze → Plan → ⛔ APPROVE → Implement → Tests must match baseline → ⛔ APPROVE → PR
+**Flow:** Baseline → Analyze → Plan → ⛔ APPROVE → Implement → Verify behavior unchanged → ⛔ APPROVE → PR
+
+**Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared PREFLIGHT and CONTEXT SCAN steps.
 
 Core constraint: **zero behavior change**.
 The test suite is the safety net. If any test breaks, the refactor is wrong — not the test.
@@ -199,7 +201,7 @@ Compare to baseline:
 
   Behavior change: NONE ✅
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ⛔ CHECKPOINT 2 — Approve PR?
+  ⛔ CHECKPOINT 2 — Approve to create PR?
   Reply: yes / request changes / abort
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```

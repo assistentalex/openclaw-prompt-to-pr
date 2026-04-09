@@ -36,25 +36,12 @@ Then restart prompt-to-pr.
 **This check MUST run before test suite and coverage checks,** because the selected
 repo determines which directory to scan for tests.
 
-### Auto-detect first, ask only when ambiguous
-
-1. If user specified `--repo <path>` or mentioned a project name → use that repo directly.
-2. If only one git repo is found → use it silently, **do not ask**.
-3. If multiple repos are found → **do NOT show a separate repo menu here.** Instead, pass
-   the repo list to the Mode Triage (§2) which will show a single unified menu
-   combining mode + repo selection. This avoids asking the user two separate questions.
-
-Scan for candidate repos:
-
-1. **Workspace git repos** — check if the current workspace has a `.git` directory
-2. **Installed skill repos** — scan `~/.openclaw/skills/` and `~/.npm-global/lib/node_modules/openclaw/skills/` for directories with `.git`
-3. **GitHub repos** — if `gh` CLI is available, list recent repos with `gh repo list --limit 10`
-
-For each candidate, detect: language, test framework, and rough test count.
-
-- ✅ Single repo → proceed silently (use it, no question)
-- ✅ Multiple repos → pass list to Mode Triage (§2), which will show repo selection as **Step 2** after mode selection (Step 1). Repo selection is a separate question from mode — mode first, repo second.
-- ❌ No repos found → **HARD STOP**
+Load `references/shared/repo-selection.md` and follow it as the canonical repo-selection policy.
+At minimum, preflight must:
+- discover local and optional GitHub repo candidates
+- prefer auto-selection when unambiguous
+- use a **single combined menu** when mode + repo are both needed
+- surface partial discovery honestly instead of pretending the list is complete
 
 ```
 🔴 STOP — No repos found.
@@ -67,7 +54,9 @@ prompt-to-pr needs a Git repository to work in. Either:
 
 ---
 
-## Check 3 — Test suite
+## Check 3 — Test suite (mode-aware)
+
+Load `references/shared/mode-policy.md` and use it as the canonical strictness matrix.
 
 Look for any of the following (in order of priority):
 
@@ -80,15 +69,18 @@ Look for any of the following (in order of priority):
 | `*.test.*`, `*.spec.*`, `tests/`, `__tests__/` directory | Test files present |
 | `cargo test` runnable | Rust |
 
-- ✅ Any detected → continue
-- ❌ None detected → **HARD STOP**
+Then apply the mode policy:
+- 🚀/🐛/♻️/🧪 without tests → **HARD STOP**
+- 🔍/📖 without tests → **SOFT WARNING**, continue
+- 🧪 without coverage tooling → **HARD STOP** for coverage analysis
 
-Message to user:
+Message to user for hard-stop modes:
 ```
 🔴 STOP — No test suite detected.
 
-prompt-to-pr requires at least a minimal test suite. Without tests,
-there's no safety net for changes and no way to verify fixes.
+prompt-to-pr requires at least a minimal test suite for Feature, Bug Fix,
+Refactor, and Test Coverage modes. Without tests, there's no safety net
+for changes and no way to verify them.
 
 Minimum to get started:
   # Node.js
@@ -101,6 +93,15 @@ Minimum to get started:
   # Go — already built in, just create *_test.go files
 
 Add at least one smoke test, then restart prompt-to-pr.
+```
+
+Message to user for soft-warning modes:
+```
+🟡 WARNING — No test suite detected.
+
+Continuing because the selected mode is Review or Docs, where code changes
+may be read-only or documentation-only. If the task expands into behavior-
+changing edits, stop and set up a minimal test suite first.
 ```
 
 ---
@@ -165,7 +166,7 @@ Always display before continuing:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Repo             ✅  ~/.openclaw/skills/prompt-to-pr
   Git              ✅
-  Test suite       ✅  (jest)
+  Test suite       ✅  (jest) / ⚠️  not detected but allowed in review/docs
   Coverage tool    ✅  (nyc)
   CLAUDE.md        ⚠️  not found
   hardshell        ⚠️  not installed

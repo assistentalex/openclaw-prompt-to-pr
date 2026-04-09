@@ -1,8 +1,9 @@
 # Mode: 🚀 New Feature
 
-**Flow:** Prompt → Context → Plan → ⛔ APPROVE → Implement → Test → Verify → ⛔ APPROVE → PR
+**Flow:** Plan → ⛔ APPROVE → Implement → Test → Verify → ⛔ APPROVE → PR
 
-Load this file after PREFLIGHT and CONTEXT SCAN are complete.
+Load this file after shared PREFLIGHT and CONTEXT SCAN are complete.
+**Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared steps.
 
 ---
 

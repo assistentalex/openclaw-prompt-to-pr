@@ -2,6 +2,8 @@
 
 **Flow:** Coverage report → Gap analysis → Plan → ⛔ APPROVE → Write tests → Verify coverage delta → ⛔ APPROVE → PR
 
+**Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared PREFLIGHT and CONTEXT SCAN steps.
+
 ---
 
 ## Phase 1 — COVERAGE REPORT
@@ -191,7 +193,7 @@ Compare before and after:
   All new tests: passing ✅
   Pre-existing tests: all still passing ✅
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ⛔ CHECKPOINT 2 — Approve PR?
+  ⛔ CHECKPOINT 2 — Approve to create PR?
   Reply: yes / request changes / abort
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```

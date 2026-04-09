@@ -1,6 +1,8 @@
 # Mode: 🐛 Bug Fix
 
-**Flow:** Reproduce → Root Cause → Fix Plan → ⛔ APPROVE → Implement Fix → Verify Fixed → Regression → ⛔ APPROVE → PR
+**Flow:** Reproduce → Root Cause → Fix Plan → ⛔ APPROVE → Implement Fix → Verify Fix + Regression → ⛔ APPROVE → PR
+
+**Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared PREFLIGHT and CONTEXT SCAN steps.
 
 Key principle: **never propose a fix before reproducing the bug.**
 A fix without reproduction is a guess, not a fix.
