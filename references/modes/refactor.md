@@ -1,7 +1,9 @@
 # Mode: ♻️ Refactor
 
-**Flow:** Baseline → Analyze → Plan → ⛔ APPROVE → Implement → Verify behavior unchanged → ⛔ APPROVE → PR
+**Flow:** Clarify → Baseline → Analyze → Plan → ⛔ APPROVE → Implement → Verify behavior unchanged → ⛔ APPROVE → PR
 
+Load `references/shared/clarify.md` for clarification rules.
+Load `references/shared/state-system.md` for durable save/resume behavior.
 **Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared PREFLIGHT and CONTEXT SCAN steps.
 
 Core constraint: **zero behavior change**.
@@ -9,7 +11,13 @@ The test suite is the safety net. If any test breaks, the refactor is wrong — 
 
 ---
 
-## Phase 1 — BASELINE
+## Phase 1 — CLARIFY
+
+Ask targeted clarification questions only when needed.
+Clarify scope boundaries before refactoring so "cleanup" does not become hidden feature work.
+Persist clarify summary to `tasks/state.json` and `tasks/todo.md` before baseline capture.
+
+## Phase 2 — BASELINE
 
 Before touching a single line of code, capture the current state.
 
@@ -47,7 +55,7 @@ Continuing with refactor.
 
 ---
 
-## Phase 2 — ANALYZE
+## Phase 3 — ANALYZE
 
 Identify what to refactor and why. Common targets:
 
@@ -84,12 +92,13 @@ Recommended techniques:
 
 ---
 
-## Phase 3 — PLAN
+## Phase 4 — PLAN
 
 Load `references/shared/plan-format.md`.
 
 Critical rule for refactor plans: **one behavior-preserving transformation per task**.
 Do not bundle multiple techniques into one task — it makes failures hard to debug.
+Include plan metadata: Overall Risk, Confidence, Blast Radius, Rollback, Unknowns, and whether fast path is allowed.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -133,7 +142,7 @@ Do not bundle multiple techniques into one task — it makes failures hard to de
 
 ---
 
-## Phase 4 — IMPLEMENT
+## Phase 5 — IMPLEMENT
 
 Execute one task at a time. After EACH task:
 
@@ -168,7 +177,7 @@ Confirm zero references outside the function definition itself.
 
 ---
 
-## Phase 5 — VERIFY — Behavior Unchanged
+## Phase 6 — VERIFY — Behavior Unchanged
 
 ### Run final test suite
 ```bash
@@ -182,6 +191,9 @@ Compare to baseline:
 - Same skipped: ✅
 
 **If any number differs → the refactor changed behavior. Do not proceed to PR.**
+
+### Release readiness
+Load `references/shared/release-readiness.md` and include a short release-readiness summary after VERIFY.
 
 ### Show before/after metrics
 ```
@@ -208,7 +220,7 @@ Compare to baseline:
 
 ---
 
-## Phase 6 — PR
+## Phase 7 — PR
 
 Load `references/shared/pr-format.md`.
 Use `refactor/` prefix for branch.

@@ -4,8 +4,8 @@ version: 1.5.0
 description: >
   Full AI-assisted development workflow — from a single prompt to a ready-to-merge PR.
   Activate when the user wants to build a feature, fix a bug, review code, refactor,
-  add tests, or write documentation. Supports 6 modes: New Feature, Bug Fix, Code Review,
-  Refactor, Test Coverage, Document. Manages context actively to stay within 200k tokens.
+  add tests, handle PR feedback, or write documentation. Supports 7 modes: New Feature, Bug Fix, Code Review,
+  Refactor, Test Coverage, Document, PR Feedback. Manages context actively to stay within 200k tokens.
   Use this skill whenever the user says "implement", "add feature", "fix bug", "review code",
   "refactor", "add tests", "document", "prompt-to-pr", "/ptopr", or starts any development task.
 tags: [workflow, development, feature, bugfix, review, refactor, testing, documentation, pr, git]
@@ -19,6 +19,7 @@ invocation:
   /ptopr refactor:     Refactor mode — clean code without changing behavior
   /ptopr test:         Test Coverage mode — gap analysis → write missing tests
   /ptopr docs:         Document mode — generate/update docs and comments
+  /ptopr pr-feedback:  PR Feedback mode — triage review comments → patch plan → verify
   /ptopr --repo PATH:  Specify which Git repo to work in
   /ptopr --repo ?:     Show repo selection menu (scan skills + workspace)
 ---
@@ -70,6 +71,7 @@ You can also trigger the skill by describing what you want:
 - "refactor the database layer" → ♻️ Refactor
 - "write tests for utils.py" → 🧪 Test Coverage
 - "document the API endpoints" → 📖 Document
+- "address PR comments" → 🗨️ PR Feedback
 
 ---
 
@@ -87,6 +89,11 @@ The selected repo becomes the **project root** — all subsequent commands run f
 Load `references/shared/mode-policy.md` and follow it as the canonical strictness matrix.
 Use it to decide when missing tests are a hard stop versus a warning, and when coverage tooling is mandatory.
 
+### Fast path
+
+Load `references/shared/fast-path.md` for compact handling of genuinely small, low-risk tasks.
+If fast path is used, still persist full durable state.
+
 Shared preflight reminders:
 - Git not initialized → STOP, explain what's missing
 - Context budget cannot be determined → assume 200k, warn user
@@ -94,6 +101,12 @@ Shared preflight reminders:
 - hardshell not installed → note it, continue without it
 
 ---
+
+## 0.5 CLARIFY — Ask before planning when needed
+
+Load `references/shared/clarify.md` when the task is ambiguous, risky, underspecified, or likely to branch into multiple valid implementations.
+If clarification is skipped, record why it was skipped.
+Persist clarification results to both `tasks/state.json` and `tasks/todo.md`.
 
 ## 1. CONTEXT SCAN — Map before reading
 
@@ -122,7 +135,8 @@ If the user's message contains intent keywords, route directly — no menu neede
 | "review", "check my code", "look at this" | 🔍 Code Review |
 | "refactor", "clean up", "reorganize", "simplify" | ♻️ Refactor |
 | "test", "coverage", "missing tests", "write tests" | 🧪 Test Coverage |
-| "document", "docs", "readme", "docstring", "comments" | 📖 Document |
+| "document", "docs", "readme", "docstring" | 📖 Document |
+| "pr feedback", "address comments", "review comments", "requested changes" | 🗨️ PR Feedback |
 
 When intent is detected AND repo is clear → skip the menu entirely, go straight to §3.
 
@@ -177,6 +191,7 @@ After triage, load the relevant mode file and follow it exclusively:
 | ♻️ Refactor | `references/modes/refactor.md` |
 | 🧪 Test Coverage | `references/modes/test-coverage.md` |
 | 📖 Document | `references/modes/document.md` |
+| 🗨️ PR Feedback | `references/modes/pr-feedback.md` |
 
 ---
 
@@ -229,17 +244,32 @@ When the user rejects at a checkpoint (says "no", "nu", "reject", "request chang
    C) Partial — tell me which files to keep and which to revert
    ```
 
+### Durable state
+Load `references/shared/state-system.md` and follow it as the canonical save/resume contract.
+Use:
+- `tasks/state.json` as machine-readable source of truth
+- `tasks/todo.md` as human-readable journal
+
+Persist state after every major transition:
+- after CLARIFY
+- after PLAN
+- after each IMPLEMENT task
+- after TEST
+- after VERIFY
+- whenever waiting for approval or interruption
+
 ### Abort at any time
 If user says "abort", "stop", "cancel", "renunță":
-1. Save current state to `tasks/todo.md` under `## Session State`
+1. Save current state to `tasks/state.json` and summarize it in `tasks/todo.md` under `## Session State`
 2. Show resume instructions
 3. Stop immediately
 
 ### Resume
 If user says "resume", "continuă", "reia":
-1. Read `tasks/todo.md` → `## Session State`
-2. Restore phase, completed tasks, relevant files
-3. Continue from where it stopped
+1. Read `tasks/state.json` first
+2. Read `tasks/todo.md` second
+3. Restore from `nextAction`
+4. Continue from where it stopped without guessing from memory
 
 ### Context monitoring
 Load `references/shared/context-budget.md` for thresholds.
@@ -252,9 +282,14 @@ Drop raw content, keep summaries. Write phase summary to `tasks/todo.md`.
 
 ### Plan format
 Load `references/shared/plan-format.md` for `tasks/todo.md` structure.
+Plan persistence must also update `tasks/state.json`.
+Plans must include overall risk, confidence, blast radius, rollback complexity, and unknowns.
 
 ### PR format
 Load `references/shared/pr-format.md` for commit, branch, and PR body conventions.
+Load `references/shared/pr-feedback-format.md` when handling post-PR review comments.
+Load `references/shared/release-readiness.md` after VERIFY in Feature, Bug Fix, and Refactor modes.
+Load `references/shared/delegation.md` when optional delegation is being considered.
 
 ### hardshell integration
 If hardshell is installed:

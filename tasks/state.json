@@ -1,0 +1,73 @@
+{
+  "version": 2,
+  "mode": "feature",
+  "repo": "/home/adminul/.openclaw/skills/prompt-to-pr",
+  "branch": "feat/prompt-to-pr-v2",
+  "phase": {
+    "shared": "done",
+    "mode": "verify",
+    "step": "batch-3-complete"
+  },
+  "task": "Build prompt-to-pr v2 with durable resume and clarification-first workflow",
+  "status": "waiting-approval",
+  "approvals": {
+    "checkpoint1": true,
+    "checkpoint2": false
+  },
+  "clarify": {
+    "questionsAsked": [],
+    "answers": [
+      "Implement all proposed useful v2 features, rand pe rand",
+      "Build an implementation system so the workflow survives disconnects"
+    ],
+    "answersSummary": "Need v2 implemented sequentially with strong disconnect recovery",
+    "assumptions": [
+      "Implement v2 in resumable batches",
+      "Batch 3 covers PR feedback mode, release readiness, and delegation hooks"
+    ],
+    "openQuestions": []
+  },
+  "plan": {
+    "summary": "Batch 3 complete: PR feedback mode exists, release-readiness format is defined, delegation hooks are documented, and regression tests cover the new wiring",
+    "tasks": [
+      "Add PR feedback mode",
+      "Add PR feedback shared format",
+      "Add release-readiness shared format",
+      "Add delegation hooks guidance",
+      "Wire new docs into SKILL and mode policy",
+      "Expand regression tests"
+    ],
+    "risk": "medium",
+    "confidence": "medium",
+    "blastRadius": "moderate",
+    "rollback": "easy"
+  },
+  "files": {
+    "touched": [
+      "references/modes/pr-feedback.md",
+      "references/shared/pr-feedback-format.md",
+      "references/shared/release-readiness.md",
+      "references/shared/delegation.md",
+      "SKILL.md",
+      "references/shared/mode-policy.md",
+      "references/modes/feature.md",
+      "references/modes/bugfix.md",
+      "references/modes/refactor.md",
+      "tests/test_smoke.py",
+      "tasks/state.json",
+      "tasks/todo.md"
+    ],
+    "planned": []
+  },
+  "tests": {
+    "baseline": "pytest -q",
+    "latest": "29 passed",
+    "coverage": "n/a"
+  },
+  "verify": {
+    "summary": "All three v2 batches are implemented and the regression suite passes",
+    "readyForPr": true
+  },
+  "nextAction": "Wait for checkpoint 2 approval to prepare commit/PR summary for v2 branch",
+  "updatedAt": "2026-04-09T15:47:00Z"
+}

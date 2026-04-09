@@ -1,12 +1,20 @@
 # Mode: 🧪 Test Coverage
 
-**Flow:** Coverage report → Gap analysis → Plan → ⛔ APPROVE → Write tests → Verify coverage delta → ⛔ APPROVE → PR
+**Flow:** Clarify → Coverage report → Gap analysis → Plan → ⛔ APPROVE → Write tests → Verify coverage delta → ⛔ APPROVE → PR
 
+Load `references/shared/clarify.md` for clarification rules.
+Load `references/shared/state-system.md` for durable save/resume behavior.
 **Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared PREFLIGHT and CONTEXT SCAN steps.
 
 ---
 
-## Phase 1 — COVERAGE REPORT
+## Phase 1 — CLARIFY
+
+Ask targeted clarification questions only when needed.
+Clarify target modules, target coverage, and what may be skipped before coverage work begins.
+Persist clarify summary to `tasks/state.json` and `tasks/todo.md` before coverage analysis.
+
+## Phase 2 — COVERAGE REPORT
 
 ### Check for coverage tool
 ```bash
@@ -46,7 +54,7 @@ Then restart prompt-to-pr in 🧪 Test Coverage mode.
 
 ---
 
-## Phase 2 — GAP ANALYSIS
+## Phase 3 — GAP ANALYSIS
 
 Parse coverage output and identify uncovered areas.
 
@@ -88,7 +96,7 @@ SKIPPED (boilerplate/generated):
 
 ---
 
-## Phase 3 — PLAN
+## Phase 4 — PLAN
 
 Load `references/shared/plan-format.md`.
 
@@ -129,7 +137,7 @@ Present test plan sorted by priority (business impact first).
 
 ---
 
-## Phase 4 — WRITE TESTS
+## Phase 5 — WRITE TESTS
 
 ### Test quality rules
 
@@ -170,7 +178,7 @@ describe('processRefund', () => {
 
 ---
 
-## Phase 5 — VERIFY COVERAGE DELTA
+## Phase 6 — VERIFY COVERAGE DELTA
 
 ### Run coverage again
 ```bash
@@ -202,7 +210,7 @@ Compare before and after:
 
 ---
 
-## Phase 6 — PR
+## Phase 7 — PR
 
 Load `references/shared/pr-format.md`.
 Use `test/` prefix for branch.

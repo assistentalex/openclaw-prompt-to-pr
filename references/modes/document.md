@@ -1,7 +1,9 @@
 # Mode: 📖 Document
 
-**Flow:** Scan gaps → Prioritize → Plan → ⛔ APPROVE → Write docs → Verify accuracy → ⛔ APPROVE → PR
+**Flow:** Clarify → Scan gaps → Prioritize → Plan → ⛔ APPROVE → Write docs → Verify accuracy → ⛔ APPROVE → PR
 
+Load `references/shared/clarify.md` for clarification rules.
+Load `references/shared/state-system.md` for durable save/resume behavior.
 **Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared PREFLIGHT and CONTEXT SCAN steps.
 
 Core principle: **documentation describes what code does, not what you wish it did.**
@@ -10,7 +12,13 @@ If the code is unclear, ask — never invent behavior.
 
 ---
 
-## Phase 1 — SCAN DOCUMENTATION GAPS
+## Phase 1 — CLARIFY
+
+Ask targeted clarification questions only when needed.
+Clarify which documentation layer matters most and whether any behavior-changing edits are expected.
+Persist clarify summary to `tasks/state.json` and `tasks/todo.md` before scanning gaps.
+
+## Phase 2 — SCAN DOCUMENTATION GAPS
 
 Check each documentation layer:
 
@@ -56,7 +64,7 @@ If CLI tool: help text / man page.
 
 ---
 
-## Phase 2 — GAP REPORT
+## Phase 3 — GAP REPORT
 
 ```
 DOCUMENTATION GAP ANALYSIS
@@ -87,9 +95,10 @@ Total gaps: significant
 
 ---
 
-## Phase 3 — PLAN
+## Phase 4 — PLAN
 
 Prioritize by impact: README first (most visible), then public API, then code docs.
+Include plan metadata: Overall Risk, Confidence, Blast Radius, Rollback, Unknowns, and whether fast path is allowed.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -125,7 +134,7 @@ Prioritize by impact: README first (most visible), then public API, then code do
 
 ---
 
-## Phase 4 — WRITE DOCS
+## Phase 5 — WRITE DOCS
 
 ### JSDoc / docstring format
 
@@ -233,7 +242,7 @@ Can you clarify so I document the actual behavior?
 
 ---
 
-## Phase 5 — VERIFY ACCURACY
+## Phase 6 — VERIFY ACCURACY
 
 For every documentation item written:
 1. Cross-reference with actual code — does the doc match what the code does?
@@ -259,7 +268,7 @@ For every documentation item written:
 
 ---
 
-## Phase 6 — PR
+## Phase 7 — PR
 
 Load `references/shared/pr-format.md`.
 Use `docs/` prefix for branch.

@@ -1,11 +1,19 @@
 # Mode: 🚀 New Feature
 
-**Flow:** Plan → ⛔ APPROVE → Implement → Test → Verify → ⛔ APPROVE → PR
+**Flow:** Clarify → Plan → ⛔ APPROVE → Implement → Test → Verify → ⛔ APPROVE → PR
 
 Load this file after shared PREFLIGHT and CONTEXT SCAN are complete.
+Load `references/shared/clarify.md` for clarification rules.
+Load `references/shared/state-system.md` for durable save/resume behavior.
 **Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared steps.
 
 ---
+
+## Phase 1 — CLARIFY
+
+Ask targeted clarification questions only when needed.
+If clarification is skipped, record why it was skipped.
+Persist clarify summary to `tasks/state.json` and `tasks/todo.md` before planning.
 
 ## Phase 2 — PLAN
 
@@ -17,7 +25,9 @@ Load `references/shared/plan-format.md` for the todo.md structure.
 2. Order tasks by dependency (what must exist before what)
 3. Identify which files are created vs modified
 4. Estimate risk per task (LOW / MEDIUM / HIGH)
-5. Define what "done" looks like for each task
+5. Add plan metadata: Overall Risk, Confidence, Blast Radius, Rollback, Unknowns
+6. Mark whether fast path is allowed or rejected
+7. Define what "done" looks like for each task
 
 ### Plan presentation format
 
@@ -194,6 +204,9 @@ If not, use this built-in checklist:
 ```bash
 git diff main --stat
 ```
+
+### Release readiness
+Load `references/shared/release-readiness.md` and include a short release-readiness summary after VERIFY.
 
 ### Verify presentation
 ```

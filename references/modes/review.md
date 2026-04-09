@@ -1,7 +1,10 @@
 # Mode: 🔍 Code Review
 
-**Flow:** Define scope → Analyze → Structured report
+**Flow:** Clarify → Define scope → Analyze → Structured report
 
+Load `references/shared/clarify.md` for clarification rules.
+Load `references/shared/state-system.md` for durable save/resume behavior.
+Load `references/shared/review-presets.md` for canonical scope presets.
 **Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared PREFLIGHT and CONTEXT SCAN steps.
 
 **This mode is READ-ONLY. No code is modified. No commits. No PR.**
@@ -11,17 +14,28 @@ Output: a structured review report saved to `.claude/reviews/review-{YYYY-MM-DD}
 
 ---
 
-## Phase 1 — DEFINE SCOPE
+## Phase 1 — CLARIFY
 
-Ask if not specified:
+Ask targeted clarification questions only when needed.
+Clarify review target, desired depth, and whether the user wants security, architecture, testing, or general review emphasis.
+Persist clarify summary to `tasks/state.json` and `tasks/todo.md` before defining scope.
+
+## Phase 2 — DEFINE SCOPE
+
+Ask if not specified, using the review presets:
 ```
 What should I review?
 
-  [1] Entire diff since main branch
-  [2] A specific file or directory
-  [3] A specific PR or commit range
-  [4] The full codebase (I'll warn if it's too large)
+  [1] Diff since main
+  [2] Changed files only
+  [3] Specific path
+  [4] PR or commit range
+  [5] Security boundaries
+  [6] Test gaps
+  [7] Architecture smells
 ```
+
+Persist the selected preset to `tasks/state.json` and summarize it in `tasks/todo.md`.
 
 If scope is too large for context budget:
 ```
@@ -37,7 +51,7 @@ Alternatively, specify a narrower scope.
 
 ---
 
-## Phase 2 — ANALYZE
+## Phase 3 — ANALYZE
 
 Read files using the selective strategy from `references/shared/context-scan.md`.
 
@@ -74,7 +88,7 @@ For each file, check all of the following:
 
 ---
 
-## Phase 3 — STRUCTURED REPORT
+## Phase 4 — STRUCTURED REPORT
 
 Save to `.claude/reviews/review-{YYYY-MM-DD}.md`
 

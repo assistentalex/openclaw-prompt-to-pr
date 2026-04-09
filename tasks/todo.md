@@ -1,13 +1,13 @@
-# prompt-to-pr — ♻️ Skill hardening round 3
-**Date:** 2026-04-09 15:10
-**Task:** Deduplicate repo-selection and mode-policy rules into shared references, then lock consistency with tests
-**Branch:** fix/ptopr-skill-hardening
+# prompt-to-pr — 🚀 v2 implementation
+**Date:** 2026-04-09 15:47
+**Task:** Build prompt-to-pr v2 with durable resume and clarification-first workflow
+**Branch:** feat/prompt-to-pr-v2
 
 ---
 
 ## Preflight
 - Git: ✅
-- Tests: ✅ (pytest, 17 tests)
+- Tests: ✅ (pytest)
 - Coverage: ⚠️ pytest-cov not installed
 - CLAUDE.md: ⚠️ not found
 - hardshell: ✅ installed
@@ -15,46 +15,93 @@
 ## Context Summary
 - Language: Python (Markdown skill package)
 - Framework: pytest
-- Core files: SKILL.md, references/shared/preflight.md, references/shared/repo-selection.md, references/shared/mode-policy.md, tests/test_smoke.py
-- Goal: reduce duplicated rules, create clear canonical policy files, and prevent wording drift with stronger tests
+- Core files: SKILL.md, references/shared/*.md, references/modes/*.md, tests/test_smoke.py
+- Goal: evolve prompt-to-pr into a v2 workflow with durable recovery, clearer planning, PR feedback handling, and modern agent workflow features
+
+## Clarify Summary
+- Questions asked: skipped
+- Answers received:
+  - Implement all useful v2 features, rand pe rand
+  - Build an implementation system so work survives disconnects
+- Assumptions:
+  - Implement in resumable batches
+  - Batch 1 covers durable state + clarification phase foundations
+  - Batch 2 covers risk metadata + fast path + review presets
+  - Batch 3 covers PR feedback + release readiness + delegation hooks
+- Open questions: none
+
+## Plan Metadata
+- Overall Risk: MEDIUM
+- Confidence: MEDIUM
+- Blast Radius: moderate
+- Rollback: easy
+- Unknowns: final polish around PR feedback integration with real provider tooling can come later
+- Fast Path: no (program is broad and multi-batch)
 
 ## Tasks
-- [x] 1. Create canonical shared repo-selection policy — Risk: MEDIUM — Est: ~60 lines
-- [x] 2. Create canonical shared mode-policy matrix — Risk: MEDIUM — Est: ~40 lines
-- [x] 3. Replace duplicated wording in SKILL.md with references to shared policy files — Risk: LOW — Est: ~20 lines
-- [x] 4. Replace duplicated wording in preflight.md with references to shared policy files — Risk: MEDIUM — Est: ~35 lines
-- [x] 5. Extend regression tests for canonical policy files and consistency checks — Risk: MEDIUM — Est: ~60 lines
-- [x] 6. Run pytest, fix one regression, and verify green state — Risk: LOW — Est: test run
+- [x] 1. Add durable state system docs and canonical state file — Risk: HIGH — Est: foundational
+- [x] 2. Add canonical clarification phase docs — Risk: MEDIUM — Est: ~40 lines
+- [x] 3. Wire state/clarify docs into SKILL.md — Risk: MEDIUM — Est: ~30 lines
+- [x] 4. Wire clarification/state behavior into all mode files — Risk: MEDIUM — Est: multi-file docs update
+- [x] 5. Update plan-format for state.json + clarify summary — Risk: MEDIUM — Est: ~25 lines
+- [x] 6. Expand regression tests for state/clarify system — Risk: MEDIUM — Est: ~40 lines
+- [x] 7. Add fast-path policy and documentation — Risk: MEDIUM — Est: ~40 lines
+- [x] 8. Add review scope presets and review-mode wiring — Risk: MEDIUM — Est: ~40 lines
+- [x] 9. Expand plan metadata with risk/confidence/blast-radius/rollback — Risk: MEDIUM — Est: ~25 lines
+- [x] 10. Expand regression tests for Batch 2 — Risk: MEDIUM — Est: ~35 lines
+- [x] 11. Add PR feedback mode and shared feedback format — Risk: HIGH — Est: ~80 lines
+- [x] 12. Add release-readiness summary format — Risk: MEDIUM — Est: ~20 lines
+- [x] 13. Add delegation hooks foundation — Risk: MEDIUM — Est: ~25 lines
+- [x] 14. Wire Batch 3 docs into SKILL and mode policy — Risk: MEDIUM — Est: ~25 lines
+- [x] 15. Expand regression tests for Batch 3 — Risk: MEDIUM — Est: ~35 lines
 
 ## Test Plan
-- Verify shared policy files exist
-- Verify repo-selection policy requires a single combined menu
-- Verify mode-policy matrix covers all supported modes
-- Verify SKILL.md and preflight.md point to the canonical policy files
-- Verify fallback rules remain documented after deduplication
+- Run pytest after each batch
+- Assert shared state/clarify files exist
+- Assert fast-path and review-presets files exist
+- Assert PR feedback / release readiness / delegation docs exist
+- Assert SKILL.md and mode docs reference canonical shared docs
+- Assert review mode presents presets
+- Assert PR feedback mode wiring exists
 
 ## Completed Tasks
-- [x] Added `references/shared/repo-selection.md`
-- [x] Added `references/shared/mode-policy.md`
-- [x] Simplified `SKILL.md` to reference canonical policy docs instead of duplicating rules
-- [x] Simplified `preflight.md` to reference canonical policy docs while preserving user-facing stop/warning messages
-- [x] Strengthened regression tests and repaired one failing expectation after deduplication
-- [x] Ran pytest successfully
+- [x] Added `references/shared/state-system.md`
+- [x] Added `references/shared/clarify.md`
+- [x] Added canonical `tasks/state.json`
+- [x] Updated `SKILL.md` to require durable state persistence and clarification-first behavior
+- [x] Updated all mode files to reference clarify/state-system and added Phase 1 — CLARIFY
+- [x] Updated `references/shared/plan-format.md`
+- [x] Added `references/shared/fast-path.md`
+- [x] Added `references/shared/review-presets.md`
+- [x] Updated `references/shared/mode-policy.md` with fast-path handling and PR Feedback mode
+- [x] Updated `references/modes/review.md` to use preset-based scope selection
+- [x] Added `references/modes/pr-feedback.md`
+- [x] Added `references/shared/pr-feedback-format.md`
+- [x] Added `references/shared/release-readiness.md`
+- [x] Added `references/shared/delegation.md`
+- [x] Updated feature/bugfix/refactor guidance with release-readiness hooks
+- [x] Expanded regression tests and validated them
 
 ## Test Results
 - Suite: pytest
-- Run: 17 passed, 0 failed
+- Run: 29 passed, 0 failed
 
 ## Verify Summary
-- Files changed: 6
-- Repo-selection and mode-strictness rules now have single sources of truth
-- Tests cover shared-policy existence, consistency, and anti-drift behavior
-- Ready for PR / summary work
+- Batch 1 complete
+- Batch 2 complete
+- Batch 3 complete
+- Workflow now has durable state, clarification-first behavior, richer plan metadata, fast-path rules, review scope presets, PR feedback mode, release-readiness summaries, and delegation foundations
+- Ready for merge / PR preparation
 
 ## Session State
-Completed.
+- Status: WAITING_APPROVAL
+- Current batch: Batch 3 completed
+- Next action: checkpoint 2 approval, then commit/PR preparation
+- Canonical state file: tasks/state.json
+- Resume prompt: `resume prompt-to-pr`
 
 ## Lessons Learned
-- 2026-04-09: If a rule appears in more than one file, it needs a canonical source or it will drift.
-- 2026-04-09: Tests should be updated to follow the source of truth after refactors, not the old location of the text.
-- 2026-04-09: Good deduplication keeps user-facing stop/warning messages intact while moving policy logic into reusable references.
+- 2026-04-09: Disconnect safety needs a machine-readable source of truth, not just a human summary.
+- 2026-04-09: Clarification should be explicit and persisted, otherwise planning quality depends too much on transient chat context.
+- 2026-04-09: Compact workflows still need full state persistence or they become the first thing to break under interruption.
+- 2026-04-09: PR workflows are incomplete if they stop at branch creation; review-comment handling needs its own mode and summary format.

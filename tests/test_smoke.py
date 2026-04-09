@@ -12,6 +12,15 @@ PREFLIGHT = ROOT / "references" / "shared" / "preflight.md"
 CONTEXT_SCAN = ROOT / "references" / "shared" / "context-scan.md"
 REPO_SELECTION = ROOT / "references" / "shared" / "repo-selection.md"
 MODE_POLICY = ROOT / "references" / "shared" / "mode-policy.md"
+STATE_SYSTEM = ROOT / "references" / "shared" / "state-system.md"
+CLARIFY = ROOT / "references" / "shared" / "clarify.md"
+FAST_PATH = ROOT / "references" / "shared" / "fast-path.md"
+REVIEW_PRESETS = ROOT / "references" / "shared" / "review-presets.md"
+PR_FEEDBACK_FORMAT = ROOT / "references" / "shared" / "pr-feedback-format.md"
+RELEASE_READINESS = ROOT / "references" / "shared" / "release-readiness.md"
+DELEGATION = ROOT / "references" / "shared" / "delegation.md"
+PR_FEEDBACK_MODE = ROOT / "references" / "modes" / "pr-feedback.md"
+STATE_JSON = ROOT / "tasks" / "state.json"
 
 
 def test_smoke():
@@ -36,6 +45,15 @@ def test_shared_policy_files_exist():
     """Verify shared policy files exist for deduplicated rules."""
     assert REPO_SELECTION.is_file(), f"Missing {REPO_SELECTION}"
     assert MODE_POLICY.is_file(), f"Missing {MODE_POLICY}"
+    assert STATE_SYSTEM.is_file(), f"Missing {STATE_SYSTEM}"
+    assert CLARIFY.is_file(), f"Missing {CLARIFY}"
+    assert FAST_PATH.is_file(), f"Missing {FAST_PATH}"
+    assert REVIEW_PRESETS.is_file(), f"Missing {REVIEW_PRESETS}"
+    assert PR_FEEDBACK_FORMAT.is_file(), f"Missing {PR_FEEDBACK_FORMAT}"
+    assert RELEASE_READINESS.is_file(), f"Missing {RELEASE_READINESS}"
+    assert DELEGATION.is_file(), f"Missing {DELEGATION}"
+    assert PR_FEEDBACK_MODE.is_file(), f"Missing {PR_FEEDBACK_MODE}"
+    assert STATE_JSON.is_file(), f"Missing {STATE_JSON}"
 
 
 def test_preflight_has_repo_discovery_section():
@@ -64,7 +82,7 @@ def test_preflight_repo_selection_is_combined_not_two_step():
 def test_mode_policy_matrix_covers_all_modes():
     """Verify the canonical mode matrix covers every supported mode."""
     content = MODE_POLICY.read_text()
-    for label in ["🚀 Feature", "🐛 Bug Fix", "♻️ Refactor", "🧪 Test Coverage", "🔍 Review", "📖 Document"]:
+    for label in ["🚀 Feature", "🐛 Bug Fix", "♻️ Refactor", "🧪 Test Coverage", "🔍 Review", "📖 Document", "🗨️ PR Feedback"]:
         assert label in content
 
 
@@ -80,10 +98,17 @@ def test_preflight_test_suite_check_is_mode_aware():
 
 
 def test_skill_references_canonical_policy_files():
-    """Verify SKILL.md points to the shared repo-selection and mode-policy docs."""
+    """Verify SKILL.md points to the shared policy docs."""
     content = SKILL.read_text()
     assert "references/shared/repo-selection.md" in content
     assert "references/shared/mode-policy.md" in content
+    assert "references/shared/state-system.md" in content
+    assert "references/shared/clarify.md" in content
+    assert "references/shared/fast-path.md" in content
+    assert "references/shared/pr-feedback-format.md" in content
+    assert "references/shared/release-readiness.md" in content
+    assert "references/shared/delegation.md" in content
+    assert "tasks/state.json" in content
     assert "Git not initialized → STOP" in content
 
 
@@ -148,6 +173,110 @@ def test_all_modes_note_phase_numbers_are_local_except_shared_steps():
     for path in (ROOT / "references" / "modes").glob("*.md"):
         content = path.read_text()
         assert "Phase numbering note:" in content, f"Missing phase numbering note in {path.name}"
+        assert "references/shared/clarify.md" in content, f"Missing clarify reference in {path.name}"
+        assert "references/shared/state-system.md" in content, f"Missing state-system reference in {path.name}"
+
+
+
+def test_plan_format_mentions_state_json_and_clarify_summary():
+    """Verify plan-format includes durable state and clarify sections."""
+    content = (ROOT / "references" / "shared" / "plan-format.md").read_text()
+    assert "tasks/state.json" in content
+    assert "## Clarify Summary" in content
+    assert "## Plan Metadata" in content
+    assert "Fast Path: yes / no" in content
+    assert "references/shared/state-system.md" in content
+
+
+
+def test_state_system_defines_resume_contract():
+    """Verify durable state system defines save/resume rules."""
+    content = STATE_SYSTEM.read_text()
+    assert "Never rely on chat history alone" in content
+    assert "tasks/state.json" in content
+    assert "Resume contract" in content
+    assert "nextAction" in content
+
+
+
+def test_clarify_doc_limits_questions_and_requires_persistence():
+    """Verify clarify guidance is bounded and persisted."""
+    content = CLARIFY.read_text()
+    assert "at most 3–5 targeted questions" in content
+    assert "tasks/state.json" in content
+    assert "tasks/todo.md" in content
+
+
+
+def test_fast_path_doc_requires_low_risk_and_durable_state():
+    """Verify fast path remains safe and resumable."""
+    content = FAST_PATH.read_text()
+    assert "risk is LOW" in content
+    assert "tasks/state.json" in content
+    assert "Exit rule" in content
+
+
+
+def test_review_presets_doc_lists_core_presets():
+    """Verify review presets cover the intended use cases."""
+    content = REVIEW_PRESETS.read_text()
+    for phrase in [
+        "Diff since main",
+        "Changed files only",
+        "Specific path",
+        "PR or commit range",
+        "Security boundaries",
+        "Test gaps",
+        "Architecture smells",
+    ]:
+        assert phrase in content
+
+
+
+def test_review_mode_uses_review_presets():
+    """Verify review mode loads and presents the preset menu."""
+    content = (ROOT / "references" / "modes" / "review.md").read_text()
+    assert "references/shared/review-presets.md" in content
+    assert "[1] Diff since main" in content
+    assert "[7] Architecture smells" in content
+
+
+
+def test_mode_policy_mentions_fast_path_rules():
+    """Verify mode policy references fast-path handling."""
+    content = MODE_POLICY.read_text()
+    assert "references/shared/fast-path.md" in content
+    assert "Review mode does not use the implementation fast path" in content
+
+
+
+def test_pr_feedback_mode_exists_and_references_shared_docs():
+    """Verify PR feedback mode is wired correctly."""
+    content = PR_FEEDBACK_MODE.read_text()
+    assert "references/shared/clarify.md" in content
+    assert "references/shared/state-system.md" in content
+    assert "references/shared/pr-feedback-format.md" in content
+    assert "MUST-FIX" in content
+    assert "UNCLEAR" in content
+
+
+
+def test_release_readiness_and_delegation_docs_exist_with_core_rules():
+    """Verify release-readiness and delegation docs include core guidance."""
+    release = RELEASE_READINESS.read_text()
+    delegation = DELEGATION.read_text()
+    assert "Merge readiness" in release
+    assert "Rollback note" in release
+    assert "Good delegation points" in delegation
+    assert "Do not delegate" in delegation
+
+
+
+def test_feature_bugfix_refactor_reference_release_readiness():
+    """Verify ship-affecting modes reference release-readiness summary."""
+    for name in ["feature.md", "bugfix.md", "refactor.md"]:
+        content = (ROOT / "references" / "modes" / name).read_text()
+        assert "references/shared/release-readiness.md" in content, f"Missing release-readiness in {name}"
 
 
 

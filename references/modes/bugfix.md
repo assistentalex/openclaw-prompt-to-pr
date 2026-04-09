@@ -1,7 +1,9 @@
 # Mode: 🐛 Bug Fix
 
-**Flow:** Reproduce → Root Cause → Fix Plan → ⛔ APPROVE → Implement Fix → Verify Fix + Regression → ⛔ APPROVE → PR
+**Flow:** Clarify → Reproduce → Root Cause → Fix Plan → ⛔ APPROVE → Implement Fix → Verify Fix + Regression → ⛔ APPROVE → PR
 
+Load `references/shared/clarify.md` for clarification rules.
+Load `references/shared/state-system.md` for durable save/resume behavior.
 **Phase numbering note:** phase numbers below are local to the mode workflow and begin after the shared PREFLIGHT and CONTEXT SCAN steps.
 
 Key principle: **never propose a fix before reproducing the bug.**
@@ -9,7 +11,13 @@ A fix without reproduction is a guess, not a fix.
 
 ---
 
-## Phase 1 — REPRODUCE
+## Phase 1 — CLARIFY
+
+Ask targeted clarification questions only when needed.
+Bug reports often need clarification about exact error, environment, repro steps, and expected behavior.
+Persist clarify summary to `tasks/state.json` and `tasks/todo.md` before reproduction.
+
+## Phase 2 — REPRODUCE
 
 ### Gather information first
 If not already provided by the user, ask:
@@ -48,6 +56,12 @@ Options:
 ```
 
 ### If reproduced → document
+Record reproduction evidence in durable state and summarize:
+- exact trigger
+- expected vs actual behavior
+- stack/error evidence
+- whether a regression test is planned
+
 ```
 ✅ BUG REPRODUCED
 
@@ -59,7 +73,7 @@ Frequency: 100% reproducible
 
 ---
 
-## Phase 2 — ROOT CAUSE ANALYSIS
+## Phase 3 — ROOT CAUSE ANALYSIS
 
 Do not jump to the fix. Trace the bug to its origin.
 
@@ -93,11 +107,13 @@ Risk: LOW — additive error handling, no logic change
 
 ---
 
-## Phase 3 — FIX PLAN
+## Phase 4 — FIX PLAN
 
 Load `references/shared/plan-format.md`.
 
-Keep the fix minimal — the principle of least change:
+Keep the fix minimal — the principle of least change.
+Include plan metadata: Overall Risk, Confidence, Blast Radius, Rollback, Unknowns, and whether fast path is allowed.
+
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -131,7 +147,7 @@ Keep the fix minimal — the principle of least change:
 
 ---
 
-## Phase 4 — IMPLEMENT FIX
+## Phase 5 — IMPLEMENT FIX
 
 Same rules as feature.md IMPLEMENT phase, plus:
 
@@ -141,7 +157,7 @@ Same rules as feature.md IMPLEMENT phase, plus:
 
 ---
 
-## Phase 5 — VERIFY FIX
+## Phase 6 — VERIFY FIX
 
 ### Step 1 — Reproduce the original bug again
 Using the exact same reproduction steps from Phase 1.
@@ -163,6 +179,9 @@ Check: did the fix break anything else?
 
 ### Step 3 — Retry logic
 Same as feature mode: max 2 automatic retries on test failures.
+
+### Release readiness
+Load `references/shared/release-readiness.md` and include a short release-readiness summary after VERIFY.
 
 ### Verify presentation
 ```
@@ -186,7 +205,7 @@ Same as feature mode: max 2 automatic retries on test failures.
 
 ---
 
-## Phase 6 — PR
+## Phase 7 — PR
 
 Load `references/shared/pr-format.md`.
 Use `fix/` prefix for branch.

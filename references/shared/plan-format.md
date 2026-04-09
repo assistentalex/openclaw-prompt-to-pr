@@ -1,11 +1,16 @@
 # Plan Format
 
 All plans are saved to `tasks/todo.md`.
+Durable machine state is saved to `tasks/state.json`.
 If `tasks/` doesn't exist, create it. If todo.md already exists, append a new section.
+Load `references/shared/state-system.md` and follow it for save/resume rules.
 
 ---
 
 ## File Structure
+
+`tasks/state.json` is the canonical resume file.
+`tasks/todo.md` is the human-readable journal.
 
 ```markdown
 # prompt-to-pr — {MODE_EMOJI} {MODE_NAME}
@@ -28,10 +33,24 @@ If `tasks/` doesn't exist, create it. If todo.md already exists, append a new se
 - Core files: src/services/user.service.ts, src/routes/auth.routes.ts
 - Adjacent: src/middleware/auth.middleware.ts
 
+## Plan Metadata
+- Overall Risk: LOW / MEDIUM / HIGH
+- Confidence: HIGH / MEDIUM / LOW
+- Blast Radius: narrow / moderate / broad
+- Rollback: easy / moderate / hard
+- Unknowns: {brief bullets or "none"}
+- Fast Path: yes / no
+
 ## Tasks
 - [ ] 1. {task description} — Risk: LOW — Est: ~20 lines
 - [ ] 2. {task description} — Risk: MEDIUM — Est: ~50 lines
 - [ ] 3. {task description} — Risk: LOW — Est: ~10 lines
+
+## Clarify Summary
+- Questions asked: {or "skipped"}
+- Answers received: {brief bullets}
+- Assumptions: {brief bullets}
+- Open questions: {brief bullets or "none"}
 
 ## Test Plan
 - Run existing suite before changes (baseline)
@@ -48,7 +67,8 @@ If `tasks/` doesn't exist, create it. If todo.md already exists, append a new se
 (filled in during VERIFY)
 
 ## Session State
-(filled in if session is interrupted)
+- See `tasks/state.json` for canonical machine state
+- Summarize current recovery point here for humans
 
 ## Lessons Learned
 (filled in after PR or on errors)
@@ -64,6 +84,14 @@ Each task must have:
 - Target file or module
 - Risk level: LOW / MEDIUM / HIGH
 - Estimated size: ~N lines affected
+
+Every plan must also include overall metadata:
+- Overall Risk
+- Confidence
+- Blast Radius
+- Rollback
+- Unknowns
+- Fast Path yes/no
 
 ```markdown
 - [ ] 1. Add `sendVerificationEmail()` to src/services/email.service.ts — Risk: LOW — Est: ~30 lines
@@ -93,16 +121,17 @@ Confirm to continue with this task: yes / skip / abort
 
 ## Session State Format
 
-Written when session is interrupted or context hits 90%:
+Written when session is interrupted, waiting for approval, or context hits 90%.
+Machine state lives in `tasks/state.json`; mirror the recovery summary in `todo.md`.
 
 ```markdown
 ## Session State
 - Mode: 🚀 New Feature
-- Status: INTERRUPTED at phase 3/6
+- Status: WAITING_APPROVAL / INTERRUPTED / ACTIVE
 - Last completed task: [x] Task 2
-- Next task: Task 3 — "Add /verify-email route"
+- Next action: Task 3 — "Add /verify-email route"
 - Files modified so far: src/services/email.service.ts, src/services/user.service.ts
-- Files still needed: src/routes/auth.routes.ts, prisma/schema.prisma
+- Canonical state file: tasks/state.json
 - Resume prompt: `resume prompt-to-pr`
 - Saved: {timestamp}
 ```
