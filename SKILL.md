@@ -12,7 +12,7 @@ tags: [workflow, development, feature, bugfix, review, refactor, testing, docume
 always: false
 user-invocable: true
 invocation:
-  /ptopr:              Start with mode selection menu
+  /ptopr:              Start in current repo if clear, otherwise ask for repo
   /ptopr feature:      New Feature mode — prompt → plan → code → PR
   /ptopr fix:          Bug Fix mode — reproduce → root cause → fix → verify
   /ptopr review:       Code Review mode — structured analysis, read-only
@@ -21,7 +21,7 @@ invocation:
   /ptopr docs:         Document mode — generate/update docs and comments
   /ptopr pr-feedback:  PR Feedback mode — triage review comments → patch plan → verify
   /ptopr --repo PATH:  Specify which Git repo to work in
-  /ptopr --repo ?:     Show repo selection menu (scan skills + workspace)
+  /ptopr --repo ?:     Ask for an explicit repo path when repo is unclear
 ---
 
 # prompt-to-pr — Full Development Workflow
@@ -55,7 +55,7 @@ Type any of these commands to activate prompt-to-pr:
 
 | Command | Action |
 |---|---|
-| `/ptopr` | Show mode selection menu |
+| `/ptopr` | Start in current repo if clear; otherwise ask for repo |
 | `/ptopr feature` | Start New Feature mode directly |
 | `/ptopr fix` | Start Bug Fix mode directly |
 | `/ptopr review` | Start Code Review mode directly |
