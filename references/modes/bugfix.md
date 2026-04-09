@@ -2,6 +2,8 @@
 
 **Flow:** Reproduce → Root Cause → Fix Plan → ⛔ APPROVE → Implement Fix → Verify Fixed → Regression → ⛔ APPROVE → PR
 
+**Phase banner mandatory:** Display `[FAZA N/M — ...]` banner as the FIRST action of every phase. See ⛔ MANDATORY in SKILL.md.
+
 Key principle: **never propose a fix before reproducing the bug.**
 A fix without reproduction is a guess, not a fix.
 

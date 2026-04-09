@@ -2,6 +2,8 @@
 
 **Flow:** Prompt → Context → Plan → ⛔ APPROVE → Implement → Test → Verify → ⛔ APPROVE → PR
 
+**Phase banner mandatory:** Display `[FAZA N/M — ...]` banner as the FIRST action of every phase. See ⛔ MANDATORY in SKILL.md.
+
 Load this file after PREFLIGHT and CONTEXT SCAN are complete.
 
 ---

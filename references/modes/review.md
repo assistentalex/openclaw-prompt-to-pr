@@ -2,6 +2,8 @@
 
 **Flow:** Scan scope → Analyze → Structured report
 
+**Phase banner mandatory:** Display `[FAZA N/M — ...]` banner as the FIRST action of every phase. See ⛔ MANDATORY in SKILL.md.
+
 **This mode is READ-ONLY. No code is modified. No commits. No PR.**
 
 Output: a structured review report saved to `.claude/reviews/review-{YYYY-MM-DD}.md`

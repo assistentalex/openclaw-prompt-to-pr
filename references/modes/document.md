@@ -2,6 +2,8 @@
 
 **Flow:** Scan gaps → Prioritize → Plan → ⛔ APPROVE → Write docs → Verify accuracy → ⛔ APPROVE → PR
 
+**Phase banner mandatory:** Display `[FAZA N/M — ...]` banner as the FIRST action of every phase. See ⛔ MANDATORY in SKILL.md.
+
 Core principle: **documentation describes what code does, not what you wish it did.**
 If the code is unclear, ask — never invent behavior.
 

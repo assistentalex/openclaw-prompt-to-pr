@@ -2,6 +2,8 @@
 
 **Flow:** Coverage report → Gap analysis → Plan → ⛔ APPROVE → Write tests → Verify coverage delta → ⛔ APPROVE → PR
 
+**Phase banner mandatory:** Display `[FAZA N/M — ...]` banner as the FIRST action of every phase. See ⛔ MANDATORY in SKILL.md.
+
 ---
 
 ## Phase 1 — COVERAGE REPORT

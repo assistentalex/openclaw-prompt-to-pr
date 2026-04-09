@@ -77,3 +77,46 @@ def test_references_directory():
     assert refs.is_dir(), "references/ directory not found"
     assert (refs / "shared").is_dir(), "references/shared/ not found"
     assert (refs / "modes").is_dir(), "references/modes/ not found"
+
+
+def test_skill_has_mandatory_section():
+    """Verify SKILL.md contains the ⛔ MANDATORY section."""
+    skill = Path(__file__).resolve().parent.parent / "SKILL.md"
+    content = skill.read_text()
+    assert "⛔ MANDATORY" in content, "⛔ MANDATORY section not found in SKILL.md"
+
+
+def test_mandatory_rules_in_skill():
+    """Verify the 3 mandatory rules are present in SKILL.md."""
+    skill = Path(__file__).resolve().parent.parent / "SKILL.md"
+    content = skill.read_text()
+    assert "Phase banner before phase work" in content, "Rule 1 (phase banner) not found"
+    assert "Real token counts only" in content, "Rule 2 (real tokens) not found"
+    assert "Checkpoints are hard stops" in content, "Rule 3 (checkpoints) not found"
+
+
+def test_never_do_has_phase_banner():
+    """Verify NEVER DO section includes the phase banner rule."""
+    skill = Path(__file__).resolve().parent.parent / "SKILL.md"
+    content = skill.read_text()
+    assert "Never start a phase without displaying the phase banner" in content, \
+        "Phase banner rule not found in NEVER DO section"
+
+
+def test_all_modes_have_banner_rule():
+    """Verify all 6 mode files contain the phase banner mandatory line."""
+    modes_dir = Path(__file__).resolve().parent.parent / "references" / "modes"
+    mode_files = list(modes_dir.glob("*.md"))
+    assert len(mode_files) >= 6, f"Expected 6+ mode files, found {len(mode_files)}"
+    for mode_file in mode_files:
+        content = mode_file.read_text()
+        assert "Phase banner mandatory" in content, \
+            f"Phase banner mandatory line not found in {mode_file.name}"
+
+
+def test_phase_banner_references_mandatory_section():
+    """Verify the shared rules phase banner section points to MANDATORY."""
+    skill = Path(__file__).resolve().parent.parent / "SKILL.md"
+    content = skill.read_text()
+    assert "See ⛔ MANDATORY" in content, \
+        "Phase banner section does not reference ⛔ MANDATORY block"

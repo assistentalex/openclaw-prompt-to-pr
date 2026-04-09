@@ -32,6 +32,22 @@ to a ready-to-merge Pull Request, with explicit approval checkpoints and active 
 
 ---
 
+## ⛔ MANDATORY — Never Skip These
+
+These rules are non-negotiable. Violating any of them is a bug in your execution, not a creative choice.
+
+1. **Phase banner before phase work.** At the start of EVERY numbered phase (Preflight, Context Scan, Plan, Implement, Test, Verify, PR), call `session_status`, get the real token count, and display the banner:
+   ```
+   [FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: ████░░░░░░  Xk/200k (YY%)
+   ```
+   This is the FIRST action in any phase. Not the second. Not after reading files. **First.**
+
+2. **Real token counts only.** Never estimate. Never guess. Never use a cached value. Call `session_status` and use the `Tokens: Xk in` value from the result.
+
+3. **Checkpoints are hard stops.** After PLAN and after VERIFY, stop and wait for explicit user approval. No exceptions.
+
+---
+
 ## INVOCATION — How to start
 
 Type any of these commands to activate prompt-to-pr:
@@ -170,14 +186,7 @@ After triage, load the relevant mode file and follow it exclusively:
 ## 4. SHARED RULES — Apply across all modes
 
 ### Phase banner
-Display at every phase transition:
-```
-[FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: ███░░░░░░░  62k/200k (31%)
-```
-
-**IMPORTANT:** Token count must come from `session_status`, never estimated.
-Call `session_status` at the START of every phase and use the real `Tokens: Xk in` value.
-Context accumulates — never reset the counter between phases or cycles.
+**See ⛔ MANDATORY section above.** This is not optional — display the banner as the FIRST action of every phase, using real token counts from `session_status`.
 
 ### Approval checkpoints
 Every mode has exactly **2 hard stops** requiring explicit user approval in chat.
@@ -260,3 +269,4 @@ If not installed: use built-in verify checklist from the active mode file.
 - Never skip PREFLIGHT, even if the user says "just start"
 - Never open a PR in Code Review mode (it's read-only)
 - Never assume tests pass — always run them
+- Never start a phase without displaying the phase banner (see ⛔ MANDATORY)
