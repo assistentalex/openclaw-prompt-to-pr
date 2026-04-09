@@ -3,6 +3,7 @@
 **Flow:** Scan scope → Analyze → Structured report
 
 **This mode is READ-ONLY. No code is modified. No commits. No PR.**
+**Preflight note:** missing tests are a warning in this mode, not a blocker. Continue the review, but flag the absence of tests as process risk when relevant.
 
 Output: a structured review report saved to `.claude/reviews/review-{YYYY-MM-DD}.md`
 

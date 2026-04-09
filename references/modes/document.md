@@ -4,6 +4,7 @@
 
 Core principle: **documentation describes what code does, not what you wish it did.**
 If the code is unclear, ask — never invent behavior.
+**Preflight note:** missing tests are a warning in this mode, not a blocker. If the work expands from documentation-only into behavior-changing edits, stop and require a minimal test suite first.
 
 ---
 

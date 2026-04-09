@@ -43,6 +43,8 @@ repo determines which directory to scan for tests.
 3. If multiple repos are found → **do NOT show a separate repo menu here.** Instead, pass
    the repo list to the Mode Triage (§2) which will show a single unified menu
    combining mode + repo selection. This avoids asking the user two separate questions.
+4. If discovery is partial because tooling is unavailable or restricted → surface the
+   discovered candidates, say discovery was partial, and ask the user to choose.
 
 Scan for candidate repos:
 
@@ -50,10 +52,16 @@ Scan for candidate repos:
 2. **Installed skill repos** — scan `~/.openclaw/skills/` and `~/.npm-global/lib/node_modules/openclaw/skills/` for directories with `.git`
 3. **GitHub repos** — if `gh` CLI is available, list recent repos with `gh repo list --limit 10`
 
+Fallback rules:
+- If `gh` is missing or not authenticated → skip GitHub discovery, continue with local repos only
+- If shell access is restricted → inspect likely repo roots with available file reads, then ask for confirmation if multiple candidates remain
+- If metadata like language/test framework cannot be detected → still list the repo, mark fields as `unknown`
+
 For each candidate, detect: language, test framework, and rough test count.
 
 - ✅ Single repo → proceed silently (use it, no question)
-- ✅ Multiple repos → pass list to Mode Triage (§2), which will show repo selection as **Step 2** after mode selection (Step 1). Repo selection is a separate question from mode — mode first, repo second.
+- ✅ Multiple repos → pass list to Mode Triage (§2), which will show a **single combined menu** for mode + repo selection
+- ⚠️ Partial discovery with one or more candidates → ask the user to confirm from the discovered list
 - ❌ No repos found → **HARD STOP**
 
 ```
@@ -67,7 +75,7 @@ prompt-to-pr needs a Git repository to work in. Either:
 
 ---
 
-## Check 3 — Test suite
+## Check 3 — Test suite (mode-aware)
 
 Look for any of the following (in order of priority):
 
@@ -81,14 +89,16 @@ Look for any of the following (in order of priority):
 | `cargo test` runnable | Rust |
 
 - ✅ Any detected → continue
-- ❌ None detected → **HARD STOP**
+- ❌ None detected in 🚀/🐛/♻️/🧪 modes → **HARD STOP**
+- ❌ None detected in 🔍/📖 modes → **SOFT WARNING**, continue
 
-Message to user:
+Message to user for hard-stop modes:
 ```
 🔴 STOP — No test suite detected.
 
-prompt-to-pr requires at least a minimal test suite. Without tests,
-there's no safety net for changes and no way to verify fixes.
+prompt-to-pr requires at least a minimal test suite for Feature, Bug Fix,
+Refactor, and Test Coverage modes. Without tests, there's no safety net
+for changes and no way to verify them.
 
 Minimum to get started:
   # Node.js
@@ -101,6 +111,15 @@ Minimum to get started:
   # Go — already built in, just create *_test.go files
 
 Add at least one smoke test, then restart prompt-to-pr.
+```
+
+Message to user for soft-warning modes:
+```
+🟡 WARNING — No test suite detected.
+
+Continuing because the selected mode is Review or Docs, where code changes
+may be read-only or documentation-only. If the task expands into behavior-
+changing edits, stop and set up a minimal test suite first.
 ```
 
 ---
@@ -165,7 +184,7 @@ Always display before continuing:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Repo             ✅  ~/.openclaw/skills/prompt-to-pr
   Git              ✅
-  Test suite       ✅  (jest)
+  Test suite       ✅  (jest) / ⚠️  not detected but allowed in review/docs
   Coverage tool    ✅  (nyc)
   CLAUDE.md        ⚠️  not found
   hardshell        ⚠️  not installed

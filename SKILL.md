@@ -89,12 +89,19 @@ The selected repo becomes the **project root** — all subsequent commands run f
 
 Hard stops (do not continue if these fail):
 - Git not initialized → STOP, explain what's missing
-- No test suite detected → STOP, recommend minimum setup
+- Test suite missing in **Feature / Fix / Refactor / Test Coverage** modes → STOP, recommend minimum setup
 - Context budget cannot be determined → assume 200k, warn user
 
 Soft warnings (continue with visible warning):
+- Test suite missing in **Review / Docs** modes → warn, continue in read-only / documentation flow
 - No CLAUDE.md → warn, continue
 - hardshell not installed → note it, continue without it
+
+Execution fallbacks (degrade gracefully, do not invent capabilities):
+- If repo discovery is partial or tool-limited → show the discovered candidates and ask the user to choose
+- If `gh` is unavailable → skip GitHub repo discovery and continue with local repos only
+- If shell access is restricted → use available file reads to inspect likely repo roots, then ask for confirmation when ambiguous
+- If coverage tooling is missing outside 🧪 Test Coverage mode → warn and continue
 
 ---
 
@@ -132,7 +139,7 @@ When intent is detected AND repo is clear → skip the menu entirely, go straigh
 ### If unclear — show unified menu
 
 When `/ptopr` is called without a clear mode (or mode+repo are both ambiguous),
-show ONE combined menu — never two separate questions:
+show ONE combined menu — never two separate questions and never a separate "pick repo first" follow-up:
 
 **Single repo (auto-detected):**
 ```
