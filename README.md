@@ -6,7 +6,7 @@ An OpenClaw skill that orchestrates the entire development cycle: from a natural
 
 ## Features
 
-- **6 workflow modes** — New Feature, Bug Fix, Code Review, Refactor, Test Coverage, Document
+- **7 workflow modes** — New Feature, Bug Fix, Code Review, Refactor, Test Coverage, Document, PR Feedback
 - **Active context management** — stays within 200k token budget by scanning selectively, not reading everything
 - **2 approval checkpoints per mode** — you approve the plan and the final result, nothing ships without you
 - **hardshell integration** — enhanced code review when the hardshell skill is installed
@@ -43,19 +43,21 @@ clawhub install prompt-to-pr
 
 ## Usage
 
-### Start with `/ptop`
+### Start with `/ptopr`
 
-Type `/ptop` to see the mode selection menu, or use a direct command:
+Use `/ptopr` in the current repo if it is already clear, or provide a repo explicitly with `--repo`.
 
 | Command | Mode |
 |---|---|
-| `/ptop` | Mode selection menu |
-| `/ptop feature` | 🚀 New Feature |
-| `/ptop fix` | 🐛 Bug Fix |
-| `/ptop review` | 🔍 Code Review |
-| `/ptop refactor` | ♻️ Refactor |
-| `/ptop test` | 🧪 Test Coverage |
-| `/ptop docs` | 📖 Document |
+| `/ptopr` | Start in current repo if clear; otherwise ask for repo |
+| `/ptopr --repo /path/to/repo` | Select repo explicitly |
+| `/ptopr feature` | 🚀 New Feature |
+| `/ptopr fix` | 🐛 Bug Fix |
+| `/ptopr review` | 🔍 Code Review |
+| `/ptopr refactor` | ♻️ Refactor |
+| `/ptopr test` | 🧪 Test Coverage |
+| `/ptopr docs` | 📖 Document |
+| `/ptopr pr-feedback` | 🗨️ PR Feedback |
 
 You can also describe what you want to do:
 
@@ -66,9 +68,11 @@ You can also describe what you want to do:
 "Refactor the database layer"  → ♻️ Refactor
 "Write tests for utils.py"     → 🧪 Test Coverage
 "Document the API endpoints"   → 📖 Document
+"Address PR comments"          → 🗨️ PR Feedback
 ```
 
-If the intent is unclear, the skill shows a mode menu to pick from.
+If the repo is unclear, the skill asks directly for a repo path instead of scanning broadly.
+If the intent is unclear but the repo is already clear, it shows the mode menu.
 
 ### Workflow Overview
 
