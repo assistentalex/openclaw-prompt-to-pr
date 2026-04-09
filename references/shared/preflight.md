@@ -36,7 +36,15 @@ Then restart prompt-to-pr.
 **This check MUST run before test suite and coverage checks,** because the selected
 repo determines which directory to scan for tests.
 
-If the user hasn't specified a repo (via `--repo` or in their prompt), scan for candidate repos:
+### Auto-detect first, ask only when ambiguous
+
+1. If user specified `--repo <path>` or mentioned a project name → use that repo directly.
+2. If only one git repo is found → use it silently, **do not ask**.
+3. If multiple repos are found → **do NOT show a separate repo menu here.** Instead, pass
+   the repo list to the Mode Triage (§2) which will show a single unified menu
+   combining mode + repo selection. This avoids asking the user two separate questions.
+
+Scan for candidate repos:
 
 1. **Workspace git repos** — check if the current workspace has a `.git` directory
 2. **Installed skill repos** — scan `~/.openclaw/skills/` and `~/.npm-global/lib/node_modules/openclaw/skills/` for directories with `.git`
@@ -44,21 +52,8 @@ If the user hasn't specified a repo (via `--repo` or in their prompt), scan for 
 
 For each candidate, detect: language, test framework, and rough test count.
 
-If multiple repos are found, present a selection menu:
-```
-📂 Available repos for prompt-to-pr:
-
-  [1] ~/workspace/my-project          (Node.js, 12 tests)
-  [2] ~/.openclaw/skills/imm-romania  (Python, 8 tests)
-  [3] ~/.openclaw/skills/prompt-to-pr (Markdown, 3 tests)
-
-  Type a number, or paste a repo path manually.
-```
-
-After selection, `cd` to the chosen repo for all subsequent checks and commands.
-
-- ✅ Single repo → proceed silently (use it)
-- ✅ Multiple repos → show menu, wait for selection
+- ✅ Single repo → proceed silently (use it, no question)
+- ✅ Multiple repos → pass list to Mode Triage for unified menu
 - ❌ No repos found → **HARD STOP**
 
 ```
