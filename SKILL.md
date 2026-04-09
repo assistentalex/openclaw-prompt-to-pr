@@ -7,20 +7,20 @@ description: >
   add tests, or write documentation. Supports 6 modes: New Feature, Bug Fix, Code Review,
   Refactor, Test Coverage, Document. Manages context actively to stay within 200k tokens.
   Use this skill whenever the user says "implement", "add feature", "fix bug", "review code",
-  "refactor", "add tests", "document", "prompt-to-pr", "/ptop", or starts any development task.
+  "refactor", "add tests", "document", "prompt-to-pr", "/ptopr", or starts any development task.
 tags: [workflow, development, feature, bugfix, review, refactor, testing, documentation, pr, git]
 always: false
 user-invocable: true
 invocation:
-  /ptop:              Start with mode selection menu
-  /ptop feature:      New Feature mode — prompt → plan → code → PR
-  /ptop fix:          Bug Fix mode — reproduce → root cause → fix → verify
-  /ptop review:       Code Review mode — structured analysis, read-only
-  /ptop refactor:     Refactor mode — clean code without changing behavior
-  /ptop test:         Test Coverage mode — gap analysis → write missing tests
-  /ptop docs:         Document mode — generate/update docs and comments
-  /ptop --repo PATH:  Specify which Git repo to work in
-  /ptop --repo ?:     Show repo selection menu (scan skills + workspace)
+  /ptopr:              Start with mode selection menu
+  /ptopr feature:      New Feature mode — prompt → plan → code → PR
+  /ptopr fix:          Bug Fix mode — reproduce → root cause → fix → verify
+  /ptopr review:       Code Review mode — structured analysis, read-only
+  /ptopr refactor:     Refactor mode — clean code without changing behavior
+  /ptopr test:         Test Coverage mode — gap analysis → write missing tests
+  /ptopr docs:         Document mode — generate/update docs and comments
+  /ptopr --repo PATH:  Specify which Git repo to work in
+  /ptopr --repo ?:     Show repo selection menu (scan skills + workspace)
 ---
 
 # prompt-to-pr — Full Development Workflow
@@ -54,13 +54,13 @@ Type any of these commands to activate prompt-to-pr:
 
 | Command | Action |
 |---|---|
-| `/ptop` | Show mode selection menu |
-| `/ptop feature` | Start New Feature mode directly |
-| `/ptop fix` | Start Bug Fix mode directly |
-| `/ptop review` | Start Code Review mode directly |
-| `/ptop refactor` | Start Refactor mode directly |
-| `/ptop test` | Start Test Coverage mode directly |
-| `/ptop docs` | Start Document mode directly |
+| `/ptopr` | Show mode selection menu |
+| `/ptopr feature` | Start New Feature mode directly |
+| `/ptopr fix` | Start Bug Fix mode directly |
+| `/ptopr review` | Start Code Review mode directly |
+| `/ptopr refactor` | Start Refactor mode directly |
+| `/ptopr test` | Start Test Coverage mode directly |
+| `/ptopr docs` | Start Document mode directly |
 
 You can also trigger the skill by describing what you want:
 
@@ -131,7 +131,7 @@ When intent is detected AND repo is clear → skip the menu entirely, go straigh
 
 ### If unclear — show two-step menu
 
-When `/ptop` is called without a clear mode, show menus in natural order:
+When `/ptopr` is called without a clear mode, show menus in natural order:
 **mode first, repo second.** Never combine them into one menu.
 
 #### Step 1 — What do you want to do?

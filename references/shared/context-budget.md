@@ -83,7 +83,7 @@ against the total budget (default 200k, or custom if specified).
 
 ### Accumulation rule
 Context tokens only go UP. Never reset the counter.
-If you start a new /ptop cycle, context from the previous cycle is still there.
+If you start a new /ptopr cycle, context from the previous cycle is still there.
 Banner at cycle start should reflect accumulated total, not zero.
 
 ### Fallback (if session_status unavailable)

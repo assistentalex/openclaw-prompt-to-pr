@@ -39,6 +39,7 @@ def test_skill_invocation_has_repo():
     skill = Path(__file__).resolve().parent.parent / "SKILL.md"
     content = skill.read_text()
     assert "--repo" in content, "--repo option not found in SKILL.md invocation"
+    assert "/ptopr" in content, "/ptopr invocation not found in SKILL.md"
 
 
 def test_skill_has_two_step_menu():
@@ -139,3 +140,15 @@ def test_per_turn_banner_rule():
         "Per-turn banner rule not found in SKILL.md"
     assert "no exceptions" in content.lower(), \
         "'No exceptions' clause not found for per-turn banner rule"
+
+
+def test_skill_invocation_uses_ptopr():
+    """Verify SKILL.md uses /ptopr (not /ptop) as the invocation command."""
+    skill = Path(__file__).resolve().parent.parent / "SKILL.md"
+    content = skill.read_text()
+    assert "/ptopr" in content, "/ptopr invocation not found in SKILL.md"
+    # Ensure old /ptop (without trailing 'r') is not used as a command
+    # Allow 'prompt-to-pr' and '/ptopr' but not bare '/ptop'
+    import re
+    bare_ptop = re.findall(r'/ptop(?!r)\b', content)
+    assert len(bare_ptop) == 0, f"Found old /ptop references (should be /ptopr): {bare_ptop}"

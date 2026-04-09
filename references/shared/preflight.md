@@ -60,7 +60,7 @@ For each candidate, detect: language, test framework, and rough test count.
 🔴 STOP — No repos found.
 
 prompt-to-pr needs a Git repository to work in. Either:
-  - Run /ptop from inside a Git repo
+  - Run /ptopr from inside a Git repo
   - Specify --repo <path>
   - Clone a repo first: git clone <url>
 ```
