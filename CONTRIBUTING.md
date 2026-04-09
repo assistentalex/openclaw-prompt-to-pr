@@ -5,7 +5,7 @@ Thank you for your interest in contributing!
 ## How to Contribute
 
 1. **Fork** the repository
-2. Create a feature branch: `git checkout -b feature/your-feature-name`
+2. Create a focused branch: `git checkout -b feat/your-change` or `git checkout -b refactor/your-change`
 3. Make your changes
 4. **Run tests:** `python3 -m pytest tests/ -v`
 5. Commit with a clear message (see conventions below)
@@ -28,7 +28,7 @@ type(scope): description
 # Examples:
 docs(readme): add installation and usage sections
 fix(preflight): handle missing git gracefully
-feature(modes): add resume capability
+feat(modes): add resume capability
 ```
 
 Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`

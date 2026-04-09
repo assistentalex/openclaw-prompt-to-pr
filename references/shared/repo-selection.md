@@ -1,68 +1,62 @@
 # Repo Selection Policy
 
-Canonical rules for discovering and selecting the target repo.
+Canonical rules for selecting the target repo.
 Use this file as the source of truth whenever prompt-to-pr needs to decide **where** to work.
 
 ---
 
 ## Core rule
 
-**Auto-detect first, ask only when ambiguous.**
+**Be explicit first, local second, ask directly otherwise.**
 
-1. If the user specified `--repo <path>` or clearly named a project → use that repo directly.
-2. If only one candidate git repo is found → use it silently.
-3. If multiple candidate repos are found → show a **single combined menu** for mode + repo selection.
-4. If discovery is partial because tools are limited → say discovery was partial and ask the user to choose from the candidates found.
+1. If the user specified `--repo <path>` or clearly named a project/path → use that repo directly.
+2. If the current working directory is already inside a git repo → use that repo silently.
+3. If the repo is still unclear → ask the user directly for the repo path or project name.
 
-**Never** ask two separate questions when one combined choice will do.
-**Never** ask for repo selection before you know whether the repo is actually ambiguous.
+**Never** start prompt-to-pr by scanning installed skills, bundled skills, or recent GitHub repos.
+**Never** make startup repo selection depend on broad multi-source discovery.
+**Never** ask two separate questions when one direct repo prompt will do.
 
 ---
 
-## Discovery sources
+## Startup contract
 
-Check candidate repos in this order:
+The startup path should stay predictable:
 
-1. Workspace git repo(s)
-2. Installed skill repos under `~/.openclaw/skills/`
-3. Installed bundled skill repos under `~/.npm-global/lib/node_modules/openclaw/skills/`
-4. Recent GitHub repos if `gh` is available and authenticated
+- explicit `--repo` wins
+- current repo is the only implicit default
+- otherwise ask for a repo path
 
-For each candidate, detect when possible:
-- path
-- primary language
-- test framework
-- rough test count
+This means prompt-to-pr should prefer:
+- "working in current repo"
+- or "give me `--repo <path>`"
 
-If any metadata cannot be detected, keep the repo in the list and mark unknown fields as `unknown`.
+instead of trying to assemble a smart list from many locations.
 
 ---
 
 ## Fallback rules
 
-- If `gh` is missing or not authenticated → skip GitHub discovery.
-- If shell access is restricted → inspect likely repo roots with available file reads.
-- If discovery remains incomplete → surface the discovered candidates and state that discovery was partial.
-- If no candidate repos are found at all → stop and tell the user prompt-to-pr needs a git repo.
+- If shell access is restricted → ask the user for `--repo <path>` or a project path/name.
+- If the current directory is not inside a git repo → do not search broadly; ask for a repo path.
+- If the user explicitly asks to browse candidates → keep the list narrow and local, and be honest if it is partial.
+- If no repo is available at all → stop and tell the user prompt-to-pr needs a git repo.
+
+If metadata cannot be detected for a user-provided repo, continue with unknown fields marked as `unknown` rather than expanding discovery scope.
 
 ---
 
-## Menu contract
+## Prompt contract
 
-If repo selection is needed, it must appear inside the same prompt as mode selection.
+If repo selection is needed, prefer a direct prompt over a discovery menu.
 
 Example shape:
 
 ```text
-🚀 prompt-to-pr — ce facem și unde?
+🚀 prompt-to-pr — am nevoie de repo.
 
-  [1] Feature      [4] Refactor
-  [2] Bug Fix      [5] Tests
-  [3] Review       [6] Docs
+Trimite un path Git repo sau pornește comanda cu:
+  /ptopr --repo /path/to/repo
 
-  Repos:
-    [a] ~/repo-a
-    [b] ~/repo-b
-
-  Type e.g. "1a" or describe what you need.
+Dacă ești deja în repo-ul corect, rulează /ptopr de acolo.
 ```

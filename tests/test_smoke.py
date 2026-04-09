@@ -1,13 +1,13 @@
 """Smoke and regression tests for the prompt-to-pr skill docs."""
 
-import os
 import re
 from pathlib import Path
 
-SKILLS_DIR = Path(os.environ.get("OPENCLAW_SKILLS_DIR", Path.home() / ".openclaw" / "skills"))
-NPM_SKILLS_DIR = Path(os.environ.get("OPENCLAW_NPM_SKILLS_DIR", Path.home() / ".npm-global" / "lib" / "node_modules" / "openclaw" / "skills"))
 ROOT = Path(__file__).resolve().parent.parent
 SKILL = ROOT / "SKILL.md"
+README = ROOT / "README.md"
+CONTRIBUTING = ROOT / "CONTRIBUTING.md"
+CHANGELOG = ROOT / "CHANGELOG.md"
 PREFLIGHT = ROOT / "references" / "shared" / "preflight.md"
 CONTEXT_SCAN = ROOT / "references" / "shared" / "context-scan.md"
 REPO_SELECTION = ROOT / "references" / "shared" / "repo-selection.md"
@@ -58,27 +58,28 @@ def test_shared_policy_files_exist():
     assert STATE_JSON.is_file(), f"Missing {STATE_JSON}"
 
 
-def test_preflight_has_repo_discovery_section():
-    """Verify preflight.md contains the repo discovery section."""
+def test_preflight_has_repo_selection_section():
+    """Verify preflight.md contains the simplified repo-selection section."""
     content = PREFLIGHT.read_text()
-    assert "## Check 2 — Repo discovery" in content
+    assert "## Check 2 — Repo selection" in content
     assert "references/shared/repo-selection.md" in content
+    assert "avoid broad startup discovery" in content
 
 
-def test_repo_selection_policy_requires_single_combined_menu():
-    """Verify the canonical repo-selection policy rejects two-step selection."""
+def test_repo_selection_policy_prefers_explicit_or_current_repo():
+    """Verify the canonical repo-selection policy prefers explicit/local selection."""
     content = REPO_SELECTION.read_text()
-    assert "single combined menu" in content
+    assert "Be explicit first, local second, ask directly otherwise" in content
+    assert "current working directory is already inside a git repo" in content
     assert "Never" in content
-    assert "mode first, repo second" not in content
 
 
-def test_preflight_repo_selection_is_combined_not_two_step():
-    """Verify preflight points to the canonical combined-selection policy."""
+def test_preflight_repo_selection_is_direct_not_discovery_heavy():
+    """Verify preflight points to the simpler repo-selection policy."""
     content = PREFLIGHT.read_text()
-    assert "single combined menu" in content
-    assert "mode first, repo second" not in content
-    assert "repo selection as **Step 2** after mode selection (Step 1)" not in content
+    assert "accept `--repo <path>` immediately when provided" in content
+    assert "ask the user directly for a repo path" in content
+    assert "installed skills, bundled skills, or GitHub" in content
 
 
 def test_mode_policy_matrix_covers_all_modes():
@@ -119,8 +120,34 @@ def test_skill_invocation_uses_ptopr_and_repo_option():
     content = SKILL.read_text()
     assert "/ptopr" in content
     assert "--repo" in content
+    assert "am nevoie de repo" in content
+    assert "scan skills + workspace" not in content
     bare_ptop = re.findall(r"/ptop(?!r)\b", content)
     assert len(bare_ptop) == 0, f"Found old /ptop references: {bare_ptop}"
+
+
+def test_readme_is_aligned_with_ptopr_and_repo_selection_flow():
+    """Verify README matches the current invocation contract."""
+    content = README.read_text()
+    assert "/ptopr" in content
+    assert "/ptopr --repo /path/to/repo" in content
+    assert "PR Feedback" in content
+    assert "asks directly for a repo path" in content
+    assert "scan skills + workspace" not in content
+    bare_ptop = re.findall(r"/ptop(?!r)\b", content)
+    assert len(bare_ptop) == 0, f"Found old /ptop references in README: {bare_ptop}"
+
+
+def test_contributing_and_changelog_are_aligned_with_current_conventions():
+    """Verify supporting docs match the current command and branch conventions."""
+    contributing = CONTRIBUTING.read_text()
+    changelog = CHANGELOG.read_text()
+    assert "feat/your-change" in contributing
+    assert "feat(modes): add resume capability" in contributing
+    assert "## [1.5.0] - 2026-04-09" in changelog
+    assert "/ptopr" in changelog
+    bare_ptop = re.findall(r"/ptop(?!r)\b", contributing)
+    assert len(bare_ptop) == 0, f"Found old /ptop references in CONTRIBUTING.md: {bare_ptop}"
 
 
 def test_context_scan_uses_project_root():
@@ -140,32 +167,13 @@ def test_context_budget_and_policy_avoid_claiming_exact_model_truth():
     assert "operational limit" in policy or "operational" in policy
 
 
-def test_repo_discovery_scans_skills_dir_if_present():
-    """Verify that the skills directory, if present, contains visible subdirectories."""
-    if SKILLS_DIR.is_dir():
-        subdirs = [d for d in SKILLS_DIR.iterdir() if d.is_dir() and not d.name.startswith(".")]
-        assert subdirs, f"Skills dir {SKILLS_DIR} exists but has no skill subdirectories"
-
-
-def test_repo_discovery_finds_git_repos_if_skill_dirs_present():
-    """Verify at least one skill repo exists when scanned skill dirs are present."""
-    repos_found = []
-    for skills_base in [SKILLS_DIR, NPM_SKILLS_DIR]:
-        if skills_base.is_dir():
-            for d in skills_base.iterdir():
-                if d.is_dir() and not d.name.startswith(".") and (d / ".git").is_dir():
-                    repos_found.append(d.name)
-    if SKILLS_DIR.is_dir() or NPM_SKILLS_DIR.is_dir():
-        assert repos_found, "No git repos found in discovered skills directories"
-
-
-def test_repo_selection_policy_has_fallback_rules():
-    """Verify fallback behavior is documented in the canonical repo-selection policy."""
+def test_repo_selection_policy_has_local_fallback_rules():
+    """Verify fallback behavior stays local and explicit."""
     content = REPO_SELECTION.read_text()
     assert "Fallback rules" in content
-    assert "If `gh` is missing or not authenticated" in content
     assert "If shell access is restricted" in content
-    assert "mark unknown fields as `unknown`" in content
+    assert "do not search broadly; ask for a repo path" in content
+    assert "unknown fields" in content
 
 
 def test_review_mode_mentions_missing_tests_are_warning_only():
