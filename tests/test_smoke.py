@@ -19,6 +19,7 @@ REVIEW_PRESETS = ROOT / "references" / "shared" / "review-presets.md"
 PR_FEEDBACK_FORMAT = ROOT / "references" / "shared" / "pr-feedback-format.md"
 RELEASE_READINESS = ROOT / "references" / "shared" / "release-readiness.md"
 DELEGATION = ROOT / "references" / "shared" / "delegation.md"
+CONTEXT_POLICY = ROOT / "references" / "shared" / "context-policy.md"
 PR_FEEDBACK_MODE = ROOT / "references" / "modes" / "pr-feedback.md"
 STATE_JSON = ROOT / "tasks" / "state.json"
 
@@ -52,6 +53,7 @@ def test_shared_policy_files_exist():
     assert PR_FEEDBACK_FORMAT.is_file(), f"Missing {PR_FEEDBACK_FORMAT}"
     assert RELEASE_READINESS.is_file(), f"Missing {RELEASE_READINESS}"
     assert DELEGATION.is_file(), f"Missing {DELEGATION}"
+    assert CONTEXT_POLICY.is_file(), f"Missing {CONTEXT_POLICY}"
     assert PR_FEEDBACK_MODE.is_file(), f"Missing {PR_FEEDBACK_MODE}"
     assert STATE_JSON.is_file(), f"Missing {STATE_JSON}"
 
@@ -127,6 +129,17 @@ def test_context_scan_uses_project_root():
     assert "{PROJECT_ROOT}" in content, "PROJECT_ROOT placeholder not found in context-scan.md"
 
 
+
+def test_context_budget_and_policy_avoid_claiming_exact_model_truth():
+    """Verify context docs frame budgets as operational, not absolute truth."""
+    budget = (ROOT / "references" / "shared" / "context-budget.md").read_text()
+    policy = CONTEXT_POLICY.read_text()
+    assert "safe working budget" in budget
+    assert "not an absolute model truth" in budget
+    assert "not a perfect measurement" in policy
+    assert "operational limit" in policy or "operational" in policy
+
+
 def test_repo_discovery_scans_skills_dir_if_present():
     """Verify that the skills directory, if present, contains visible subdirectories."""
     if SKILLS_DIR.is_dir():
@@ -196,6 +209,7 @@ def test_state_system_defines_resume_contract():
     assert "tasks/state.json" in content
     assert "Resume contract" in content
     assert "nextAction" in content
+    assert "Pressure-triggered minimum update set" in content
 
 
 
@@ -247,6 +261,30 @@ def test_mode_policy_mentions_fast_path_rules():
     content = MODE_POLICY.read_text()
     assert "references/shared/fast-path.md" in content
     assert "Review mode does not use the implementation fast path" in content
+
+
+
+def test_context_policy_defines_next_step_and_red_vs_critical_behavior():
+    """Verify v3 context policy adds adaptive control concepts."""
+    content = CONTEXT_POLICY.read_text()
+    assert "Next-step heuristic" in content
+    assert "tiny" in content and "small" in content and "medium" in content and "large" in content
+    assert "Red" in content and "Critical" in content
+    assert "checkpoint required" in content
+    assert "save state and stop" in content
+    assert "Mini v3 save-trigger contract" in content
+    assert "nextAction" in content
+
+
+
+def test_skill_references_context_policy_and_adaptive_monitoring():
+    """Verify SKILL.md uses context-policy and adaptive wording."""
+    content = SKILL.read_text()
+    assert "references/shared/context-policy.md" in content
+    assert "safe working budget" in content
+    assert "next-step size" in content
+    assert "Do not treat red as an automatic stop" in content
+    assert "set `nextAction`, and stop" in content
 
 
 

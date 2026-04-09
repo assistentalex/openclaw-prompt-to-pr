@@ -1,15 +1,15 @@
 {
-  "version": 2,
+  "version": 3,
   "mode": "feature",
   "repo": "/home/adminul/.openclaw/skills/prompt-to-pr",
-  "branch": "feat/prompt-to-pr-v2",
+  "branch": "feat/prompt-to-pr-v3-context-control",
   "phase": {
     "shared": "done",
-    "mode": "verify",
-    "step": "batch-3-complete"
+    "mode": "implement",
+    "step": "batch-2-next-step-and-phase-aware-complete"
   },
-  "task": "Build prompt-to-pr v2 with durable resume and clarification-first workflow",
-  "status": "waiting-approval",
+  "task": "Build prompt-to-pr v3 adaptive context control",
+  "status": "active",
   "approvals": {
     "checkpoint1": true,
     "checkpoint2": false
@@ -17,57 +17,55 @@
   "clarify": {
     "questionsAsked": [],
     "answers": [
-      "Implement all proposed useful v2 features, rand pe rand",
-      "Build an implementation system so the workflow survives disconnects"
+      "Design a v3 plan for the context bar/control system",
+      "Implement it after approval",
+      "Continue with Batch 2 because it is the practical part"
     ],
-    "answersSummary": "Need v2 implemented sequentially with strong disconnect recovery",
+    "answersSummary": "Need v3 adaptive context control with practical next-step and phase-aware logic",
     "assumptions": [
-      "Implement v2 in resumable batches",
-      "Batch 3 covers PR feedback mode, release readiness, and delegation hooks"
+      "Implement v3 in resumable batches",
+      "Batch 2 should stay minimal and practical, not overengineered"
     ],
     "openQuestions": []
   },
   "plan": {
-    "summary": "Batch 3 complete: PR feedback mode exists, release-readiness format is defined, delegation hooks are documented, and regression tests cover the new wiring",
+    "summary": "Batch 2 complete: next-step heuristic and phase-aware rules are now canonical and tested",
     "tasks": [
-      "Add PR feedback mode",
-      "Add PR feedback shared format",
-      "Add release-readiness shared format",
-      "Add delegation hooks guidance",
-      "Wire new docs into SKILL and mode policy",
-      "Expand regression tests"
+      "Add minimal next-step heuristic mapping",
+      "Add phase-aware context behavior",
+      "Wire scan/compression docs to heuristic",
+      "Update SKILL monitoring rules",
+      "Validate docs/tests"
     ],
     "risk": "medium",
-    "confidence": "medium",
+    "confidence": "high",
     "blastRadius": "moderate",
     "rollback": "easy"
   },
   "files": {
     "touched": [
-      "references/modes/pr-feedback.md",
-      "references/shared/pr-feedback-format.md",
-      "references/shared/release-readiness.md",
-      "references/shared/delegation.md",
+      "references/shared/context-policy.md",
+      "references/shared/context-budget.md",
+      "references/shared/context-scan.md",
+      "references/shared/compression.md",
       "SKILL.md",
-      "references/shared/mode-policy.md",
-      "references/modes/feature.md",
-      "references/modes/bugfix.md",
-      "references/modes/refactor.md",
       "tests/test_smoke.py",
       "tasks/state.json",
       "tasks/todo.md"
     ],
-    "planned": []
+    "planned": [
+      "references/shared/state-system.md"
+    ]
   },
   "tests": {
     "baseline": "pytest -q",
-    "latest": "29 passed",
+    "latest": "32 passed",
     "coverage": "n/a"
   },
   "verify": {
-    "summary": "All three v2 batches are implemented and the regression suite passes",
-    "readyForPr": true
+    "summary": "Batch 2 docs/tests are green; next-step and phase-aware rules are now part of the canonical policy",
+    "readyForPr": false
   },
-  "nextAction": "Wait for checkpoint 2 approval to prepare commit/PR summary for v2 branch",
-  "updatedAt": "2026-04-09T15:47:00Z"
+  "nextAction": "Decide whether to do Batch 3 save-state trigger polish now or stop after the useful core",
+  "updatedAt": "2026-04-09T17:37:00Z"
 }

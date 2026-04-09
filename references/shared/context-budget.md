@@ -1,132 +1,107 @@
 # Context Budget Management
 
-Total assumed budget: **200,000 tokens**
-This applies to all models unless the user specifies otherwise.
+This file defines the conservative operating budget used by prompt-to-pr.
+It does **not** claim to be the model's exact maximum context window.
+For behavioral rules, load `references/shared/context-policy.md` as the canonical source.
+
+---
+
+## Safe Working Budget
+
+Default conservative fallback budget: **200,000 tokens**
+
+Use this only when no better budget signal is available.
+If the user specifies a budget or the runtime exposes a better one, prefer that.
+
+Think of this number as the skill's **safe working budget**, not an absolute model truth.
 
 ---
 
 ## Phase Budget Allocation
 
-| Phase | Budget | Max Tokens | Purpose |
-|---|---|---|---|
-| PREFLIGHT | 0.5% | 1,000 | Checks only, no code reading |
-| CONTEXT SCAN | 20% | 40,000 | Mapping + selective reading |
-| PLAN | 5% | 10,000 | Plan generation + user review |
-| IMPLEMENT | 40% | 80,000 | Code writing, largest phase |
-| TEST | 15% | 30,000 | Test output + retry cycles |
-| VERIFY | 10% | 20,000 | Diff + checklist |
-| PR | 5% | 10,000 | Commit, branch, PR body |
-| ERROR RESERVE | 4.5% | 9,000 | Unexpected retries, edge cases |
+Apply these percentages against the resolved safe working budget.
+
+| Phase | Budget | Purpose |
+|---|---|---|
+| PREFLIGHT | 0.5% | Checks only, no code reading |
+| CONTEXT SCAN | 20% | Mapping + selective reading |
+| PLAN | 5% | Plan generation + user review |
+| IMPLEMENT | 40% | Code writing, largest phase |
+| TEST | 15% | Test output + retry cycles |
+| VERIFY | 10% | Diff + checklist |
+| PR | 5% | Commit, branch, PR body |
+| ERROR RESERVE | 4.5% | Unexpected retries, edge cases |
 
 ---
 
-## Monitoring Thresholds
+## Monitoring thresholds
 
-Track cumulative token usage across all phases.
+Track cumulative token usage across the session.
+Use `session_status` as the primary signal, then apply the behavior rules from `context-policy.md`.
 
-### Green Zone: 0–60%  (0–120k tokens)
+### Green Zone: 0–60%
 - Work normally
-- No restrictions
-- Banner: `████████░░  96k/200k (48%)`
 
-### Yellow Zone: 60–80%  (120k–160k tokens)
-Switch to compact mode automatically:
+### Yellow Zone: 60–80%
+- Switch to compact mode automatically
 - Summarize instead of quoting full file content
-- Replace file bodies with function signatures only
-- Shorten plan entries to one line each
-- Skip optional context (comments, docstrings) when reading code
-- Banner: `🟡 ████████░░  144k/200k (72%)`
+- Replace file bodies with function signatures or short summaries when possible
 
-### Orange Zone: 80–90%  (160k–180k tokens)
-Warn user explicitly:
-```
-🟠 CONTEXT WARNING — 82% used (164k/200k)
-Switching to aggressive compression. Output will be more concise.
-Current phase will complete, then I'll pause for your input.
-```
-- Compress all previous phase summaries to bullet points
-- Only keep the active task in full detail
-- Save state to tasks/todo.md immediately
+### Orange Zone: 80–90%
+- Save durable state proactively
+- Summarize before medium/large actions
+- Warn the user when helpful
 
-### Red Zone: 90%+  (180k+ tokens)
-Force stop:
-```
-🔴 CONTEXT LIMIT — 91% used (182k/200k)
-Stopping to prevent context overflow.
+### Red Zone: 90%+
+- Require a checkpoint before medium/large actions
+- Save durable state before continuing
+- Continue only for tiny/small actions when safe and resumable
 
-State saved to tasks/todo.md
-To resume: "resume prompt-to-pr"
-```
-- Save full session state
-- Do not attempt to continue
-- Show resume instructions
+### Critical Zone
+- Save state and stop
+- Do not continue into medium/large actions
 
 ---
 
-## How to Track Real Token Usage
+## How to track real usage
 
-**Always use real token counts, never estimates.**
+Always prefer runtime token data from `session_status`.
+Look for the `Tokens: Xk in` line.
+Use that as the current session-pressure signal.
 
-At the start of every phase, call `session_status` to get actual token usage:
-
-```
-session_status → look for "Tokens: Xk in" line
-```
-
-Use the `Xk` value as your current context usage. Calculate the percentage
-against the total budget (default 200k, or custom if specified).
-
-### Why real counts?
-- Estimates are unreliable — a 10KB file can be 2k or 5k tokens depending on content
-- Cumulative context includes all prior conversation, not just files you read
-- Resetting the counter between cycles is WRONG — context accumulates
-
-### Accumulation rule
-Context tokens only go UP. Never reset the counter.
-If you start a new /ptopr cycle, context from the previous cycle is still there.
-Banner at cycle start should reflect accumulated total, not zero.
-
-### Fallback (if session_status unavailable)
-Use these rough multipliers only as last resort:
-
-| Content type | Tokens per line |
-|---|---|
-| Code (dense) | 8–12 tokens |
-| Code (sparse/comments) | 4–6 tokens |
-| Plain text / docs | 4–5 tokens |
-| JSON / config | 6–10 tokens |
-| Test output | 3–4 tokens |
-
-**Quick estimate:** `file size in KB × 250 ≈ tokens`
-
-Example: a 10KB file ≈ 2,500 tokens
+Important:
+- this is the best available real signal, not perfect truth
+- compaction and caching may change practical pressure
+- future tool output size is still estimated, not known
 
 ---
 
-\n## Budget Banner Format
+## Banner format
 
-Display at the start of EVERY assistant turn during the ptop workflow — not just at phase transitions. The user must always see budget status. Every message starts with the banner, no exceptions:
+Every ptop workflow message should begin with a context banner.
+Prefer operational clarity over fake precision.
 
+Recommended format:
+
+```text
+[FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: 165k used · Safe: 200k · Next: MEDIUM · 🟠
 ```
-[FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: ████░░░░░░  Xk/200k (YY%) [emoji]
-```
 
-Color indicators:
-- No emoji = green (< 60%)
-- 🟡 = yellow (60–80%)
-- 🟠 = orange (80–90%)
-- 🔴 = red (90%+)
+Minimum fields:
+- current used tokens
+- safe working budget
+- next-step size
+- pressure indicator
 
 ---
 
+## Custom budget
 
-## Custom Budget
+If the user specifies a different context size or safe budget, store and reuse it for the session.
+Recalculate phase budgets proportionally.
 
-If the user specifies a different context size:
-```
-User: "meu model are 128k context"
-```
-Recalculate all phase budgets proportionally.
-Display: `Using custom budget: 128k tokens`
+Example:
+`User: modelul meu are 128k context`
 
-Store the custom value and use it for all subsequent calculations in the session.
+Display:
+`Using custom safe budget: 128k tokens`

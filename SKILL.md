@@ -5,7 +5,7 @@ description: >
   Full AI-assisted development workflow — from a single prompt to a ready-to-merge PR.
   Activate when the user wants to build a feature, fix a bug, review code, refactor,
   add tests, handle PR feedback, or write documentation. Supports 7 modes: New Feature, Bug Fix, Code Review,
-  Refactor, Test Coverage, Document, PR Feedback. Manages context actively to stay within 200k tokens.
+  Refactor, Test Coverage, Document, PR Feedback. Manages context actively with adaptive context control.
   Use this skill whenever the user says "implement", "add feature", "fix bug", "review code",
   "refactor", "add tests", "document", "prompt-to-pr", "/ptopr", or starts any development task.
 tags: [workflow, development, feature, bugfix, review, refactor, testing, documentation, pr, git]
@@ -37,9 +37,9 @@ to a ready-to-merge Pull Request, with explicit approval checkpoints and active 
 
 These rules are non-negotiable. Violating any of them is a bug in your execution, not a creative choice.
 
-1. **Context banner in EVERY assistant turn.** During the entire ptop workflow, EVERY response the assistant sends must begin with the context banner — not just at phase starts. Call `session_status`, get the real token count, and display:
+1. **Context banner in EVERY assistant turn.** During the entire ptop workflow, EVERY response the assistant sends must begin with the context banner — not just at phase starts. Call `session_status`, get the real token count, and display an operational banner that includes used tokens, safe working budget, next-step size, and pressure indicator. Example:
    ```
-   [FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: ████░░░░░░░  Xk/200k (YY%)
+   [FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: 165k used · Safe: 200k · Next: MEDIUM · 🟠
    ```
    This applies to all turns: questions, plan presentations, code output, checkpoint prompts, test results, verify summaries. The user must always see budget status. **First line of every message, no exceptions.**
 
@@ -111,7 +111,9 @@ Persist clarification results to both `tasks/state.json` and `tasks/todo.md`.
 ## 1. CONTEXT SCAN — Map before reading
 
 Load `references/shared/context-budget.md` to initialize the budget tracker.
+Load `references/shared/context-policy.md` as the canonical context-control policy.
 Load `references/shared/context-scan.md` for the selective reading strategy.
+Before any major read/output/test action, classify the expected next step as tiny, small, medium, or large.
 
 **Never read the entire codebase. Always: map → filter → read selectively.**
 
@@ -204,8 +206,9 @@ Display at every phase transition:
 ```
 
 **IMPORTANT:** Token count must come from `session_status`, never estimated.
-Call `session_status` at the START of every phase and use the real `Tokens: Xk in` value.
-Context accumulates — never reset the counter between phases or cycles.
+Call `session_status` at the START of every phase and use the real `Tokens: Xk in` value as the session-pressure signal.
+Treat the safe working budget as an operational limit, not a claim about exact model maximum context.
+Context accumulates conservatively across phases and cycles unless the runtime clearly indicates otherwise.
 
 ### Approval checkpoints
 Every mode has exactly **2 hard stops** requiring explicit user approval in chat.
@@ -272,9 +275,15 @@ If user says "resume", "continuă", "reia":
 4. Continue from where it stopped without guessing from memory
 
 ### Context monitoring
-Load `references/shared/context-budget.md` for thresholds.
-At 80% → warn user and switch to compact mode.
-At 90% → force STOP, save state, show resume instructions.
+Load `references/shared/context-budget.md` and `references/shared/context-policy.md`.
+Use both current session pressure and expected next-step size.
+- At yellow → switch to concise mode
+- At orange + tiny/small next step → continue after proactive save
+- At orange + medium/large next step → summarize first, save resumable state, then continue
+- At red + tiny/small next step → continue only if resumable state is already saved
+- At red + medium/large next step → save resumable state and require a checkpoint before continuing
+- At critical → save resumable state, set `nextAction`, and stop
+Do not treat red as an automatic stop if the next action is tiny/small and the workflow is safely resumable.
 
 ### Phase compression
 After each phase, execute compression rules from `references/shared/compression.md`.

@@ -2,7 +2,8 @@
 
 **Core rule: never read the whole codebase. Map → Filter → Read selectively.**
 
-Budget for this phase: 40k tokens max.
+Budget for this phase: 40k tokens max under the resolved safe working budget.
+Use `references/shared/context-policy.md` to decide whether the next read is small, medium, or large before reading.
 
 ---
 
@@ -80,6 +81,13 @@ Budget: up to 5k tokens.
 ---
 
 ## Step 4 — Read selectively
+
+Before each read, apply the minimal next-step heuristic:
+- one Tier 1 file section → usually `small`
+- several Tier 1 files or one large full file → usually `medium`
+- broad directory or many full files → `large`
+
+At orange/red pressure, prefer multiple small reads over one large read.
 
 ### For Tier 1 files (full read):
 ```bash

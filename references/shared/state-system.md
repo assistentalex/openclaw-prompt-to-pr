@@ -87,6 +87,19 @@ Write both `tasks/state.json` and `tasks/todo.md` after every major transition:
 
 If the workflow is long-running, save after any meaningful decision, not just after edits.
 
+### Pressure-triggered minimum update set
+
+When context policy triggers a save because of orange/red/critical pressure, update at least:
+- `phase`
+- `status`
+- `files.touched` if relevant
+- `tests.latest` if a test step just completed
+- `approvals` if waiting for user input
+- `nextAction`
+- `updatedAt`
+
+This minimum update set exists so resume works even if the session stops immediately afterward.
+
 ---
 
 ## Resume contract
@@ -96,6 +109,7 @@ When the user says `resume`, `continuă`, or `reia`:
 2. Read `tasks/todo.md` second
 3. Resume from `nextAction`
 4. Do not reconstruct state from memory if the file exists
+5. If the last saved status came from orange/red/critical pressure handling, trust the saved `nextAction` over conversational recollection
 
 If `tasks/state.json` is missing but `tasks/todo.md` exists:
 - warn that resume is degraded

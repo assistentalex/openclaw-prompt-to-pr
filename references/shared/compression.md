@@ -124,7 +124,7 @@ KEEP in todo.md:
 
 ## Emergency Compression (triggered at 80%+ context)
 
-Apply immediately when entering Orange Zone:
+Apply immediately when entering Orange Zone with a medium/large next step, or any time the current phase is TEST and pressure is orange or higher.
 
 1. Summarize ALL previous phase content to 3 bullet points per phase
 2. Drop all code snippets from context EXCEPT currently active file
@@ -134,5 +134,5 @@ Apply immediately when entering Orange Zone:
 After emergency compression, display:
 ```
 🟠 Emergency compression applied. Detailed history moved to tasks/todo.md.
-Continuing with minimal context. Run "resume" in a new session if quality degrades.
+Continuing with minimal context. Next-step size will be re-evaluated before the next major action.
 ```
