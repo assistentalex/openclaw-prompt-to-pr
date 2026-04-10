@@ -14,7 +14,8 @@ If no repo exists yet:
    - clone an existing repo
    - create a new local repo
 3. **Recommend recording the repo in a human-readable inventory** (`REPOS.md`) once created.
-4. **If the machine registry is in use, also add it there** after first successful run.
+4. **Mark whether it should enter prompt-to-pr selection** using `Registry: yes/no`.
+5. **If the machine registry is in use and the entry is `Registry: yes`, also add it there** after first successful run.
 
 ## Suggested user-facing response
 
@@ -35,8 +36,8 @@ If this is a brand new project, recommended bootstrap:
   git commit -m "chore: initial commit"
 
 Then record it in:
-  - REPOS.md (human-readable inventory)
-  - prompt-to-pr repo registry (optional machine-readable helper)
+  - REPOS.md (human-readable inventory; include `Registry: yes/no`)
+  - prompt-to-pr repo registry (optional machine-readable helper, only when `Registry: yes`)
 ```
 
 ## Recommendation policy
@@ -61,4 +62,5 @@ It helps the user and the agent remember:
 - paths
 - aliases
 - active vs archived status
+- whether the repo should be synced into prompt-to-pr selection (`Registry: yes/no`)
 - nested subprojects that are not separate repos

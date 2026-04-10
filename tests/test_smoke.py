@@ -142,6 +142,7 @@ def test_readme_is_aligned_with_ptopr_and_repo_selection_flow():
     assert "/ptopr" in content
     assert "/ptopr --repo /path/to/repo" in content
     assert "REPOS.md" in content
+    assert "Registry: yes/no" in content
     assert "PR Feedback" in content
     assert "shows a repo selection menu" in content
     assert "known repos from the registry" in content
@@ -206,6 +207,7 @@ def test_no_repo_onboarding_doc_exists_and_recommends_creation():
     assert "prompt-to-pr still requires a Git repo" in content
     assert "create a new local repo" in content
     assert "REPOS.md" in content
+    assert "Registry: yes/no" in content
 
 
 def test_review_mode_mentions_missing_tests_are_warning_only():
