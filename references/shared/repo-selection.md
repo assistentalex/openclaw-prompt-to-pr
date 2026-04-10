@@ -47,7 +47,7 @@ instead of trying to assemble a smart list from many locations at startup.
 - If shell access is restricted → ask the user for `--repo <path>` or a project path/name.
 - If the current directory is not inside a git repo → do not search broadly; use the registry or ask for a repo path.
 - If the user explicitly asks to browse candidates → keep the list narrow and local (bounded by registry roots), and be honest if it is partial.
-- If no repo is available at all → stop and tell the user prompt-to-pr needs a git repo.
+- If no repo is available at all → stop and tell the user prompt-to-pr needs a git repo, recommend creating one, and suggest recording it in `REPOS.md`.
 
 If metadata cannot be detected for a user-provided repo, continue with unknown fields marked as `unknown` rather than expanding discovery scope.
 
@@ -84,3 +84,4 @@ The registry defines:
 - `lastActiveRepo`: the repo from the last successful run
 
 The registry is optional and meant to enhance UX — if missing, prompt-to-pr falls back to explicit `--repo`, current repo, or direct path prompt.
+Keep `REPOS.md` as the human-readable companion inventory for names, paths, aliases, and project status.
