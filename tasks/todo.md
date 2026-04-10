@@ -9,7 +9,7 @@
 - Git: ✅
 - Tests: ✅ (pytest)
 - Coverage: ⚠️ pytest-cov not installed
-- CLAUDE.md: ⚠️ not found
+- Conventions (SKILL.md): ⚠️ not found
 - hardshell: ✅ installed
 
 ## Context Summary

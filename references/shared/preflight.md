@@ -124,37 +124,37 @@ Install a coverage tool to get gap analysis. Continuing.
 
 ---
 
-## Check 5 — CLAUDE.md (soft)
+## Check 5 — Project conventions (soft)
 
 ```bash
-ls CLAUDE.md 2>/dev/null || ls .claude/CLAUDE.md 2>/dev/null
+ls SKILL.md 2>/dev/null || ls .openclaw/CONVENTIONS.md 2>/dev/null
 ```
 
-- ✅ Found → read it for project conventions before context scan
+- ✅ Found → read SKILL.md (or CONVENTIONS.md) for project-specific conventions before context scan
 - ❌ Not found → soft warning
 
 ```
-🟡 WARNING — No CLAUDE.md found.
+🟡 WARNING — No project conventions found (no SKILL.md or conventions section).
 Project-specific conventions won't be loaded. Continuing with defaults.
-Consider creating CLAUDE.md to persist conventions across sessions.
+Consider documenting conventions inside SKILL.md (e.g., a "conventions" or "lessons" section) so tools and peers can load them automatically.
 ```
 
 ---
 
 ## Check 6 — hardshell (soft)
 
-Check if `hardshell` skill is installed:
+Check if `hardshell` skill is installed (OpenClaw locations):
 ```bash
-ls .claude/skills/hardshell/SKILL.md 2>/dev/null || \
-ls ~/.claude/skills/hardshell/SKILL.md 2>/dev/null
+ls ~/.openclaw/skills/hardshell/SKILL.md 2>/dev/null || \
+ls SKILL.md 2>/dev/null
 ```
 
 - ✅ Found → note for IMPLEMENT and VERIFY phases
 - ❌ Not found → note, use built-in checklists
 
 ```
-ℹ️  hardshell not detected. Built-in quality checklists will be used.
-Install hardshell for enhanced security and architecture rules.
+ℹ️  hardshell not detected in OpenClaw locations. Built-in quality checklists will be used.
+Install hardshell in ~/.openclaw/skills/hardshell/ for enhanced security and architecture rules.
 ```
 
 ---
@@ -171,7 +171,7 @@ Always display before continuing:
   Git              ✅
   Test suite       ✅  (jest) / ⚠️  not detected but allowed in review/docs
   Coverage tool    ✅  (nyc)
-  CLAUDE.md        ⚠️  not found
+  Conventions (SKILL.md)   ⚠️  not found
   hardshell        ⚠️  not installed
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Status: READY

@@ -97,7 +97,7 @@ If fast path is used, still persist full durable state.
 Shared preflight reminders:
 - Git not initialized → STOP, explain what's missing
 - Context budget cannot be determined → assume 200k, warn user
-- No CLAUDE.md → warn, continue
+- No project conventions (SKILL.md) → warn, continue
 - hardshell not installed → note it, continue without it
 
 ---

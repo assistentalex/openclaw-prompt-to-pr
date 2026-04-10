@@ -247,7 +247,7 @@ Execute git sequence:
 Write Lessons Learned to todo.md:
 - What went smoothly
 - Any surprises encountered
-- Any rules to add to CLAUDE.md
+- Any rules to add to SKILL.md (conventions section)
 
 Display:
 ```

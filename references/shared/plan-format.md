@@ -24,7 +24,7 @@ Load `references/shared/state-system.md` and follow it for save/resume rules.
 - Git: ✅
 - Tests: ✅ (jest)
 - Coverage: ✅ (nyc)
-- CLAUDE.md: ⚠️ not found
+- Conventions (SKILL.md): ⚠️ not found
 - hardshell: ⚠️ not installed
 
 ## Context Summary
@@ -149,4 +149,4 @@ Written after PR creation or after correcting an error:
 ```
 
 These accumulate over time and become project-specific knowledge.
-If CLAUDE.md exists, suggest adding recurring lessons there.
+If SKILL.md exists, suggest adding recurring lessons or a conventions section there.

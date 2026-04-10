@@ -55,7 +55,7 @@ git grep -l "KEYWORD1\|KEYWORD2\|KEYWORD3" 2>/dev/null | head -30
 Also always include:
 - Entry points: `index.*`, `main.*`, `app.*`, `server.*`
 - Config: `package.json`, `pyproject.toml`, `go.mod`, `Makefile`
-- CLAUDE.md (if exists)
+- Project conventions: `SKILL.md` (if exists)
 
 ---
 
