@@ -23,12 +23,21 @@ Do not treat the displayed number as exact proof of how many tokens remain.
 ## Two separate concepts
 
 ### Session Pressure
-The current token load reported by the runtime, usually from `session_status`.
+The current session load reported by the runtime, usually from `session_status`.
 
-This is the best available real-time pressure signal, but it is still approximate because:
+Prefer the runtime's **Context** value (for example `Context: 93k/200k`) as the primary operational pressure signal when it is available.
+Treat this as the closest thing to session-load / crowding telemetry.
+
+### Token Telemetry
+The runtime may also expose **Tokens** (for example `Tokens: 38k in`).
+This is useful telemetry, but it is not automatically the same thing as context occupancy.
+Do not present token counts as if they were equivalent to `Context` usage.
+
+Both signals are still approximate because:
 - runtime compaction may change effective context shape
 - cache hits reduce practical cost
 - future tool output size is unknown
+- token accounting and context accounting may diverge in the runtime
 
 ### Safe Working Budget
 The conservative workflow budget used by prompt-to-pr to decide how aggressively to operate.
@@ -54,10 +63,20 @@ Do not describe the fallback as model truth.
 ## Pressure values
 
 Track these values explicitly:
-- `rawPressure` = session tokens / safe working budget
+- `rawPressure` = session context / safe working budget when Context is available
+- `fallbackPressure` = session tokens / safe working budget when Context is unavailable
 - `effectivePressure` = adjusted operational pressure after considering cache/compaction hints when available
 
-If no meaningful adjustment signal exists, treat `effectivePressure == rawPressure`.
+If Context is unavailable, fall back to Tokens.
+If no meaningful adjustment signal exists, treat `effectivePressure == rawPressure` (or the fallback pressure when Context is missing).
+
+## Divergence handling
+
+If `Context` and `Tokens` differ materially, do not flatten them into a single fake `used` number.
+Instead:
+- show both signals in the banner
+- drive risk decisions primarily from `Context` when available
+- optionally note that the runtime signals diverge if the difference is large enough to matter operationally
 
 ---
 
@@ -195,13 +214,14 @@ Pressure-specific behavior:
 
 The banner should display operationally useful information, not just a percentage.
 Prefer showing:
-- used tokens
+- current context load
+- token telemetry
 - safe working budget
 - next-step size
 - pressure indicator
 
 Example:
-`Context: 165k used · Safe: 200k · Next: LARGE · 🟠`
+`Context: 165k/200k · Tokens: 38k in · Next: LARGE · 🟠`
 
 ---
 

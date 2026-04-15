@@ -36,8 +36,8 @@ Apply these percentages against the resolved safe working budget.
 
 ## Monitoring thresholds
 
-Track cumulative token usage across the session.
-Use `session_status` as the primary signal, then apply the behavior rules from `context-policy.md`.
+Track cumulative session pressure across the session.
+Use `session_status` as the primary signal, and prefer the runtime's `Context` value for pressure decisions when it is available. Keep `Tokens` as secondary telemetry, then apply the behavior rules from `context-policy.md`.
 
 ### Green Zone: 0–60%
 - Work normally
@@ -65,14 +65,18 @@ Use `session_status` as the primary signal, then apply the behavior rules from `
 
 ## How to track real usage
 
-Always prefer runtime token data from `session_status`.
-Look for the `Tokens: Xk in` line.
-Use that as the current session-pressure signal.
+Always prefer runtime data from `session_status`.
+When available:
+- use `Context: Xk/200k` as the current session-pressure signal
+- use `Tokens: Yk in` as secondary runtime telemetry
+
+If `Context` is unavailable, fall back to `Tokens`.
 
 Important:
-- this is the best available real signal, not perfect truth
+- these are the best available runtime signals, not perfect truth
 - compaction and caching may change practical pressure
 - future tool output size is still estimated, not known
+- `Tokens` and `Context` may diverge, so do not collapse them into one fake `used` number
 
 ---
 
@@ -84,11 +88,12 @@ Prefer operational clarity over fake precision.
 Recommended format:
 
 ```text
-[FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: 165k used · Safe: 200k · Next: MEDIUM · 🟠
+[FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: 165k/200k · Tokens: 38k in · Next: MEDIUM · 🟠
 ```
 
 Minimum fields:
-- current used tokens
+- current context load (or fallback pressure signal)
+- token telemetry when available
 - safe working budget
 - next-step size
 - pressure indicator
