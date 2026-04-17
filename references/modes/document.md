@@ -250,6 +250,11 @@ For every documentation item written:
 3. Check @throws errors are actually thrown in that function
 4. Check example values are realistic and valid
 
+If the documentation produces a previewable output (rendered README/docs site, generated HTML/docs artifact, email/template output), propose 1–2 concrete preview tests before PR/commit.
+Default shape:
+- Test 1: happy path preview
+- Test 2: edge / empty / failure preview
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ✅ DOCS VERIFIED — 📖 Document

@@ -299,6 +299,16 @@ Load `references/shared/pr-feedback-format.md` when handling post-PR review comm
 Load `references/shared/release-readiness.md` after VERIFY in Feature, Bug Fix, and Refactor modes.
 Load `references/shared/delegation.md` when optional delegation is being considered.
 
+### Preview discipline before PR
+When the work produces a previewable output before PR/commit (for example HTML, UI, rendered docs, generated text, templates, screenshots, dashboards, or email output), proactively propose **1–2 concrete preview tests** before publishing.
+
+Use a compact format:
+- `Test 1:` happy path preview
+- `Test 2:` edge/empty/failure preview
+
+The goal is to catch embarrassing output before PR, not to replace the formal test suite.
+If a realistic preview is cheap, recommend running it before final PR/push steps.
+
 ### hardshell integration
 If hardshell is installed:
 - During IMPLEMENT: apply security, architecture, clean code rules
