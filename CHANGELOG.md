@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.2] - 2026-04-19
+
+### Changed
+- Localized runtime artifacts (`tasks/state.json`, `tasks/todo.md`, `.openclaw/reviews/`) as local-only working files instead of committed repository truth
+- Aligned `SKILL.md`, the PR template, and shared docs with the runtime-artifact contract
+- Added regression coverage to prevent runtime-artifact contract drift
+
 ## [1.6.1] - 2026-04-19
 
 ### Changed

@@ -1,6 +1,6 @@
 [project]
 name = "prompt-to-pr"
-version = "1.0.0"
+version = "1.6.2"
 description = "Full AI-assisted development workflow — from prompt to ready-to-merge PR"
 requires-python = ">=3.8"
 

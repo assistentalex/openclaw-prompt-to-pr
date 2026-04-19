@@ -1,6 +1,6 @@
 ---
 name: prompt-to-pr
-version: 1.5.0
+version: 1.6.2
 description: >
   Full AI-assisted development workflow — from a single prompt to a ready-to-merge PR.
   Activate when the user wants to build a feature, fix a bug, review code, refactor,
