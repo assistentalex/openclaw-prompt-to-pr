@@ -248,9 +248,10 @@ When the user rejects at a checkpoint (says "no", "nu", "reject", "request chang
 ### Durable state
 Load `references/shared/state-system.md` and follow it as the canonical save/resume contract.
 Use:
-- `tasks/state.json` as machine-readable source of truth
-- `tasks/todo.md` as human-readable journal
+- `tasks/state.json` as machine-readable local runtime state
+- `tasks/todo.md` as human-readable local runtime journal
 
+These are runtime working files, not stable repository truth.
 Persist state after every major transition:
 - after CLARIFY
 - after PLAN
@@ -261,14 +262,14 @@ Persist state after every major transition:
 
 ### Abort at any time
 If user says "abort", "stop", "cancel", "renunță":
-1. Save current state to `tasks/state.json` and summarize it in `tasks/todo.md` under `## Session State`
+1. Save current local runtime state to `tasks/state.json` and summarize it in `tasks/todo.md` under `## Session State`
 2. Show resume instructions
 3. Stop immediately
 
 ### Resume
 If user says "resume", "continuă", "reia":
-1. Read `tasks/state.json` first
-2. Read `tasks/todo.md` second
+1. Read local runtime `tasks/state.json` first
+2. Read local runtime `tasks/todo.md` second
 3. Restore from `nextAction`
 4. Continue from where it stopped without guessing from memory
 
@@ -286,11 +287,11 @@ Do not treat red as an automatic stop if the next action is tiny/small and the w
 
 ### Phase compression
 After each phase, execute compression rules from `references/shared/compression.md`.
-Drop raw content, keep summaries. Write phase summary to `tasks/todo.md`.
+Drop raw content, keep summaries. Write the phase summary to local runtime `tasks/todo.md`.
 
 ### Plan format
 Load `references/shared/plan-format.md` for `tasks/todo.md` structure.
-Plan persistence must also update `tasks/state.json`.
+Plan persistence must also update local runtime `tasks/state.json`.
 Plans must include overall risk, confidence, blast radius, rollback complexity, and unknowns.
 
 ### PR format
