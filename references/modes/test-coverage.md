@@ -185,6 +185,11 @@ describe('processRefund', () => {
 npm test -- --coverage
 ```
 
+If the tested area produces a previewable output (UI, HTML, email, rendered docs, generated text, dashboard, screenshot, template output), propose 1–2 concrete preview tests before PR/commit.
+Default shape:
+- Test 1: happy path preview
+- Test 2: edge / empty / failure preview
+
 Compare before and after:
 
 ```

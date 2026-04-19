@@ -124,6 +124,8 @@ def test_skill_references_canonical_policy_files():
     assert "references/shared/repo-registry.md" not in content
     assert "tasks/state.json" in content
     assert "Git not initialized → STOP" in content
+    assert "Preview discipline before PR" in content
+    assert "propose **1–2 concrete preview tests**" in content
 
 
 def test_skill_invocation_uses_ptopr_and_repo_option():
@@ -345,6 +347,15 @@ def test_feature_bugfix_refactor_reference_release_readiness():
     for name in ["feature.md", "bugfix.md", "refactor.md"]:
         content = (ROOT / "references" / "modes" / name).read_text()
         assert "references/shared/release-readiness.md" in content, f"Missing release-readiness in {name}"
+
+
+def test_previewable_modes_propose_preview_tests_before_pr():
+    """Verify relevant modes nudge preview testing before PR/commit."""
+    for name in ["feature.md", "bugfix.md", "document.md", "refactor.md", "test-coverage.md"]:
+        content = (ROOT / "references" / "modes" / name).read_text()
+        assert "propose 1–2 concrete preview tests before PR/commit" in content, f"Missing preview-test rule in {name}"
+        assert "Test 1: happy path preview" in content, f"Missing preview-test example in {name}"
+        assert "Test 2: edge / empty / failure preview" in content, f"Missing preview-test example in {name}"
 
 
 def test_pr_modes_use_consistent_checkpoint_2_wording():

@@ -195,6 +195,12 @@ Compare to baseline:
 ### Release readiness
 Load `references/shared/release-readiness.md` and include a short release-readiness summary after VERIFY.
 
+### Preview test suggestions
+If the refactor changes a previewable output (UI, HTML, email, rendered docs, generated text, dashboard, screenshot, template output), propose 1–2 concrete preview tests before PR/commit.
+Default shape:
+- Test 1: happy path preview
+- Test 2: edge / empty / failure preview
+
 ### Show before/after metrics
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
