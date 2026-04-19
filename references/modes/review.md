@@ -10,7 +10,7 @@ Load `references/shared/review-presets.md` for canonical scope presets.
 **This mode is READ-ONLY. No code is modified. No commits. No PR.**
 **Preflight note:** missing tests are a warning in this mode, not a blocker. Continue the review, but flag the absence of tests as process risk when relevant.
 
-Output: a structured review report saved to `.openclaw/reviews/review-{YYYY-MM-DD}.md`
+Output: a structured review report saved locally to `.openclaw/reviews/review-{YYYY-MM-DD}.md`
 
 ---
 
@@ -90,7 +90,7 @@ For each file, check all of the following:
 
 ## Phase 4 — STRUCTURED REPORT
 
-Save to `.openclaw/reviews/review-{YYYY-MM-DD}.md`
+Save locally to `.openclaw/reviews/review-{YYYY-MM-DD}.md`
 
 ```markdown
 # Code Review — {scope description}
@@ -203,7 +203,7 @@ Display summary in chat:
   🔵 CLEAN CODE:   5 issues
   🟠 PROCESS:      3 issues
 
-  Full report: .openclaw/reviews/review-2025-04-09.md
+  Full local report: .openclaw/reviews/review-2025-04-09.md
 
   Next steps:
   → Fix [S1] SQL injection now

@@ -8,6 +8,7 @@ SKILL = ROOT / "SKILL.md"
 README = ROOT / "README.md"
 CONTRIBUTING = ROOT / "CONTRIBUTING.md"
 CHANGELOG = ROOT / "CHANGELOG.md"
+GITIGNORE = ROOT / ".gitignore"
 PREFLIGHT = ROOT / "references" / "shared" / "preflight.md"
 CONTEXT_SCAN = ROOT / "references" / "shared" / "context-scan.md"
 REPO_SELECTION = ROOT / "references" / "shared" / "repo-selection.md"
@@ -22,7 +23,6 @@ RELEASE_READINESS = ROOT / "references" / "shared" / "release-readiness.md"
 DELEGATION = ROOT / "references" / "shared" / "delegation.md"
 CONTEXT_POLICY = ROOT / "references" / "shared" / "context-policy.md"
 PR_FEEDBACK_MODE = ROOT / "references" / "modes" / "pr-feedback.md"
-STATE_JSON = ROOT / "tasks" / "state.json"
 
 
 def test_smoke():
@@ -57,7 +57,7 @@ def test_shared_policy_files_exist():
     assert DELEGATION.is_file(), f"Missing {DELEGATION}"
     assert CONTEXT_POLICY.is_file(), f"Missing {CONTEXT_POLICY}"
     assert PR_FEEDBACK_MODE.is_file(), f"Missing {PR_FEEDBACK_MODE}"
-    assert STATE_JSON.is_file(), f"Missing {STATE_JSON}"
+    assert GITIGNORE.is_file(), f"Missing {GITIGNORE}"
 
 
 def test_preflight_has_repo_selection_and_repos_md_sections():
@@ -164,6 +164,8 @@ def test_contributing_and_changelog_are_aligned_with_current_conventions():
     contributing = CONTRIBUTING.read_text()
     changelog = CHANGELOG.read_text()
     assert "feat/your-change" in contributing
+    assert "feat/add-resume-mode" in contributing
+    assert "feature/add-resume-mode" not in contributing
     assert "feat(modes): add resume capability" in contributing
     assert "## [1.5.0] - 2026-04-09" in changelog
     assert "/ptopr" in changelog
@@ -242,6 +244,24 @@ def test_plan_format_mentions_state_json_and_clarify_summary():
     assert "references/shared/state-system.md" in content
 
 
+def test_runtime_artifacts_are_gitignored_and_documented_as_local():
+    """Verify runtime state/review artifacts are local-only operational files."""
+    gitignore = GITIGNORE.read_text()
+    state_system = STATE_SYSTEM.read_text()
+    readme = README.read_text()
+    contributing = CONTRIBUTING.read_text()
+    review_mode = (ROOT / "references" / "modes" / "review.md").read_text()
+
+    assert "tasks/state.json" in gitignore
+    assert "tasks/todo.md" in gitignore
+    assert ".openclaw/reviews/" in gitignore
+    assert "runtime working files" in state_system
+    assert "ignored by git" in state_system
+    assert "local runtime working files" in readme
+    assert "operational runtime artifacts" in contributing
+    assert "saved locally to `.openclaw/reviews/review-{YYYY-MM-DD}.md`" in review_mode
+
+
 def test_state_system_defines_resume_contract():
     """Verify durable state system defines save/resume rules."""
     content = STATE_SYSTEM.read_text()
@@ -250,6 +270,7 @@ def test_state_system_defines_resume_contract():
     assert "Resume contract" in content
     assert "nextAction" in content
     assert "Pressure-triggered minimum update set" in content
+    assert "not durable repository content" in content
 
 
 def test_clarify_doc_limits_questions_and_requires_persistence():

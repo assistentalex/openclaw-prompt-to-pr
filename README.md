@@ -11,6 +11,7 @@ An OpenClaw skill that orchestrates the entire development cycle: from a natural
 - **2 approval checkpoints per mode** — you approve the plan and the final result, nothing ships without you
 - **hardshell integration** — enhanced code review when the hardshell skill is installed
 - **Resume capability** — abort anytime, pick up where you left off
+- **Local runtime state** — workflow state and review artifacts stay local; they are not intended as committed repository truth
 
 ## Modes
 
@@ -74,6 +75,11 @@ Use `/ptopr` in the current repo if it is already clear, or provide a repo expli
 | `/ptopr docs` | 📖 Document |
 | `/ptopr pr-feedback` | 🗨️ PR Feedback |
 
+Versioning note:
+- `CHANGELOG.md` is the release history
+- `SKILL.md` exposes the skill-facing version metadata
+- `pyproject.toml` should not silently drift from those documents
+
 You can also describe what you want to do:
 
 ```
@@ -124,6 +130,16 @@ Nothing is committed or pushed without your explicit "yes".
 python3 -m pytest tests/ -v
 ```
 
+### Local runtime artifacts
+
+prompt-to-pr uses local runtime working files while it runs:
+- `tasks/state.json` — machine-readable resume state
+- `tasks/todo.md` — human-readable session journal
+- `.openclaw/reviews/` — generated review reports
+
+These files are operational artifacts for local runs and are **not intended to be committed as stable repository content**.
+If the repo needs examples for documentation, keep explicit templates or snippets instead of live runtime snapshots.
+
 ### No repo yet?
 
 prompt-to-pr still requires Git. Recommended bootstrap for a brand-new project:
@@ -142,24 +158,31 @@ After creation, record it in:
 
 ### Project structure
 
+Simplified structure snapshot:
+
 ```
 prompt-to-pr/
-├── SKILL.md                    # Main skill definition
+├── SKILL.md
 ├── references/
-│   ├── shared/                 # Cross-mode references
-│   │   ├── preflight.md        # Preflight check rules
-│   │   ├── context-scan.md     # How to scan codebase selectively
-│   │   ├── context-budget.md   # Token budget tracking
-│   │   ├── compression.md      # Phase compression rules
-│   │   ├── plan-format.md      # tasks/todo.md format
-│   │   └── pr-format.md        # Commit/branch/PR conventions
-│   └── modes/                  # Mode-specific workflows
+│   ├── shared/
+│   │   ├── preflight.md
+│   │   ├── repo-selection.md
+│   │   ├── no-repo-onboarding.md
+│   │   ├── context-scan.md
+│   │   ├── context-budget.md
+│   │   ├── context-policy.md
+│   │   ├── state-system.md
+│   │   ├── review-presets.md
+│   │   ├── plan-format.md
+│   │   └── pr-format.md
+│   └── modes/
 │       ├── feature.md
 │       ├── bugfix.md
 │       ├── review.md
 │       ├── refactor.md
 │       ├── test-coverage.md
-│       └── document.md
+│       ├── document.md
+│       └── pr-feedback.md
 ├── tests/
 │   └── test_smoke.py
 ├── pyproject.toml

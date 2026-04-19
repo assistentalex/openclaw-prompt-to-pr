@@ -1,1 +1,4 @@
 __pycache__/
+.openclaw/reviews/
+tasks/state.json
+tasks/todo.md
