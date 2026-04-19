@@ -21,7 +21,6 @@ invocation:
   /ptopr docs:         Document mode — generate/update docs and comments
   /ptopr pr-feedback:  PR Feedback mode — triage review comments → patch plan → verify
   /ptopr --repo PATH:  Specify which Git repo to work in
-  /ptopr --repo ?:     Show repo selection menu (use known repos from registry, then bounded local discovery)
 ---
 
 # prompt-to-pr — Full Development Workflow
@@ -81,7 +80,7 @@ Load `references/shared/preflight.md` and execute all checks before anything els
 
 ### Repo selection
 
-Load `references/shared/repo-selection.md`, `references/shared/repo-registry.md`, and `references/shared/no-repo-onboarding.md` and follow them as the canonical repo-selection policy.
+Load `references/shared/repo-selection.md` and `references/shared/no-repo-onboarding.md` and follow them as the canonical repo-selection policy.
 The selected repo becomes the **project root** — all subsequent commands run from that directory.
 
 ### Mode policy

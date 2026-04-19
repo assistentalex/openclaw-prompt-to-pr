@@ -36,12 +36,11 @@ Then restart prompt-to-pr.
 **This check MUST run before test suite and coverage checks,** because the selected
 repo determines which directory to scan for tests.
 
-Load `references/shared/repo-selection.md`, `references/shared/repo-registry.md`, and `references/shared/no-repo-onboarding.md` and follow them as the canonical repo-selection policy.
+Load `references/shared/repo-selection.md` and `references/shared/no-repo-onboarding.md` and follow them as the canonical repo-selection policy.
 At minimum, preflight must:
 - accept `--repo <path>` immediately when provided
 - prefer the current git repo when the command is already running inside one
-- otherwise, use the repo registry (aliases, recents, bounded discovery) to suggest a repo
-- ask the user directly for a repo path when the registry does not yield a clear repo
+- otherwise, ask the user directly for a repo path
 - avoid broad startup discovery across installed skills, bundled skills, or GitHub
 - if the user has no repo yet, recommend creating one and recording it in `REPOS.md`
 
@@ -57,7 +56,27 @@ prompt-to-pr needs a Git repository to work in. Either:
 
 ---
 
-## Check 3 — Test suite (mode-aware)
+## Check 3 — REPOS.md (soft)
+
+Check whether `REPOS.md` exists in the workspace or project context.
+
+- ✅ Found → note that it can be used as the local repo map when repo selection is unclear
+- ⚠️ Missing → continue, but recommend creating it
+
+```
+🟡 WARNING — REPOS.md not found.
+
+prompt-to-pr can still work with:
+  - --repo <path>
+  - current repo
+
+But `REPOS.md` is recommended as the local repo map for known repos and subprojects.
+Consider creating it to reduce ambiguity.
+```
+
+---
+
+## Check 4 — Test suite (mode-aware)
 
 Load `references/shared/mode-policy.md` and use it as the canonical strictness matrix.
 
@@ -109,7 +128,7 @@ changing edits, stop and set up a minimal test suite first.
 
 ---
 
-## Check 4 — Coverage tool (soft)
+## Check 5 — Coverage tool (soft)
 
 Check if a coverage tool exists (nyc, c8, pytest-cov, go cover, etc.).
 
@@ -124,7 +143,7 @@ Install a coverage tool to get gap analysis. Continuing.
 
 ---
 
-## Check 5 — Project conventions (soft)
+## Check 6 — Project conventions (soft)
 
 ```bash
 ls SKILL.md 2>/dev/null || ls .openclaw/CONVENTIONS.md 2>/dev/null
@@ -141,7 +160,7 @@ Consider documenting conventions inside SKILL.md (e.g., a "conventions" or "less
 
 ---
 
-## Check 6 — hardshell (soft)
+## Check 7 — hardshell (soft)
 
 Check if `hardshell` skill is installed (OpenClaw locations):
 ```bash
@@ -170,6 +189,7 @@ Always display before continuing:
   Repo             ✅  ~/.openclaw/skills/prompt-to-pr
   Git              ✅
   Test suite       ✅  (jest) / ⚠️  not detected but allowed in review/docs
+  REPOS.md         ✅  found / ⚠️  missing but optional
   Coverage tool    ✅  (nyc)
   Conventions (SKILL.md)   ⚠️  not found
   hardshell        ⚠️  not installed

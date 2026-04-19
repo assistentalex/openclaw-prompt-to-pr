@@ -45,19 +45,17 @@ clawhub install prompt-to-pr
 
 ### Recommended local prerequisite
 
-Keep a human-readable repo inventory in `REPOS.md`.
-This complements the machine-readable prompt-to-pr repo registry and helps both the user and the agent disambiguate repo names, paths, aliases, and nested subprojects.
+Keep a minimal human-readable repo inventory in `REPOS.md`.
+Use it as a simple local map so the user and the agent can disambiguate repo names, paths, aliases, and important subprojects.
 
 Recommended fields per entry:
 - Path
-- Type
 - Alias
+- Type
 - Status
-- Registry: yes/no
 
-Rule of thumb:
-- `Registry: yes` → real Git repo, should also be synced into `prompt-to-pr-repo-registry.json`
-- `Registry: no` → archive, nested subproject, or anything that should not appear in prompt-to-pr repo selection
+Keep `REPOS.md` factual and lightweight.
+If something needs richer description, put it in the repo's own docs instead of expanding the inventory schema.
 
 
 ### Start with `/ptopr`
@@ -88,7 +86,7 @@ You can also describe what you want to do:
 "Address PR comments"          → 🗨️ PR Feedback
 ```
 
-If the repo is unclear, the skill shows a repo selection menu (using known repos from the registry and bounded local discovery) instead of scanning broadly.
+If the repo is unclear, the skill prefers the local repo map in `REPOS.md` when available; otherwise it asks directly for a repo path.
 If the intent is unclear but the repo is already clear, it shows the mode menu.
 If you do not have a repo yet, create one first, record it in `REPOS.md`, then run `/ptopr` again.
 
@@ -140,10 +138,7 @@ git commit -m "chore: initial commit"
 ```
 
 After creation, record it in:
-- `REPOS.md` — human-readable inventory
-- prompt-to-pr repo registry — optional machine-readable helper
-
-If the new entry is marked `Registry: yes`, sync it into `prompt-to-pr-repo-registry.json` too.
+- `REPOS.md` — minimal human-readable inventory
 
 ### Project structure
 
