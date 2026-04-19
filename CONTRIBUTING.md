@@ -15,7 +15,7 @@ Thank you for your interest in contributing!
 
 | Type | Prefix | Example |
 |------|--------|---------|
-| New feature | `feature/` | `feature/add-resume-mode` |
+| New feature | `feat/` | `feat/add-resume-mode` |
 | Bug fix | `fix/` | `fix/context-budget-overflow` |
 | Documentation | `docs/` | `docs/readme-and-contributing` |
 | Refactor | `refactor/` | `refactor/simplify-preflight` |
@@ -44,6 +44,22 @@ Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 - Keep PRs focused — one concern per PR
 - Ensure tests pass before submitting
 - The skill itself uses prompt-to-pr's review mode — meta!
+
+## Local runtime artifacts
+
+These files/directories are operational runtime artifacts and should stay local during normal use:
+- `tasks/state.json`
+- `tasks/todo.md`
+- `.openclaw/reviews/`
+
+Do not treat them as stable repository truth. If you need examples for docs, add explicit templates or reference snippets instead.
+
+## Versioning note
+
+Keep release/version metadata aligned:
+- `CHANGELOG.md` is the release history
+- `SKILL.md` carries the skill-facing version metadata
+- `pyproject.toml` should stay aligned with the published/documents version story
 
 ## Questions?
 

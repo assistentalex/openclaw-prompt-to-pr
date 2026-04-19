@@ -12,8 +12,10 @@ Use this file as the source of truth whenever the workflow must survive disconne
 Every important workflow transition must be persisted to disk.
 
 Use two files together:
-- `tasks/state.json` → machine-readable canonical state
-- `tasks/todo.md` → human-readable summary and journal
+- `tasks/state.json` → machine-readable canonical runtime state
+- `tasks/todo.md` → human-readable runtime summary and journal
+
+These are **runtime working files**, not durable repository content. They should remain local during normal use and be ignored by git.
 
 `tasks/state.json` is the primary source of truth for resume.
 `tasks/todo.md` is the human summary and audit trail.
@@ -75,7 +77,7 @@ Use two files together:
 
 ## Persistence checkpoints
 
-Write both `tasks/state.json` and `tasks/todo.md` after every major transition:
+Write both `tasks/state.json` and `tasks/todo.md` after every major transition (as local runtime files):
 - after CLARIFY
 - after PLAN
 - after each IMPLEMENT task
@@ -117,6 +119,11 @@ If `tasks/state.json` is missing but `tasks/todo.md` exists:
 
 If both are missing:
 - say no resumable state exists
+
+## Repository hygiene
+
+Do not treat `tasks/state.json` or `tasks/todo.md` as stable source-controlled examples of the workflow state.
+If the repo needs documented examples, keep those as dedicated templates or reference snippets rather than committed live runtime snapshots.
 
 ---
 
