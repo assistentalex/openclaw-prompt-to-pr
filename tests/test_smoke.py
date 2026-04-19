@@ -11,7 +11,6 @@ CHANGELOG = ROOT / "CHANGELOG.md"
 PREFLIGHT = ROOT / "references" / "shared" / "preflight.md"
 CONTEXT_SCAN = ROOT / "references" / "shared" / "context-scan.md"
 REPO_SELECTION = ROOT / "references" / "shared" / "repo-selection.md"
-REPO_REGISTRY = ROOT / "references" / "shared" / "repo-registry.md"
 NO_REPO_ONBOARDING = ROOT / "references" / "shared" / "no-repo-onboarding.md"
 MODE_POLICY = ROOT / "references" / "shared" / "mode-policy.md"
 STATE_SYSTEM = ROOT / "references" / "shared" / "state-system.md"
@@ -47,7 +46,6 @@ def test_references_directory_exists():
 def test_shared_policy_files_exist():
     """Verify shared policy files exist for deduplicated rules."""
     assert REPO_SELECTION.is_file(), f"Missing {REPO_SELECTION}"
-    assert REPO_REGISTRY.is_file(), f"Missing {REPO_REGISTRY}"
     assert NO_REPO_ONBOARDING.is_file(), f"Missing {NO_REPO_ONBOARDING}"
     assert MODE_POLICY.is_file(), f"Missing {MODE_POLICY}"
     assert STATE_SYSTEM.is_file(), f"Missing {STATE_SYSTEM}"
@@ -62,24 +60,27 @@ def test_shared_policy_files_exist():
     assert STATE_JSON.is_file(), f"Missing {STATE_JSON}"
 
 
-def test_preflight_has_repo_selection_section():
-    """Verify preflight.md contains the simplified repo-selection section."""
+def test_preflight_has_repo_selection_and_repos_md_sections():
+    """Verify preflight.md contains repo selection plus a soft REPOS.md check."""
     content = PREFLIGHT.read_text()
     assert "## Check 2 — Repo selection" in content
     assert "references/shared/repo-selection.md" in content
     assert "avoid broad startup discovery" in content
-    assert "references/shared/repo-registry.md" in content
+    assert "## Check 3 — REPOS.md (soft)" in content
+    assert "REPOS.md not found" in content
+    assert "references/shared/repo-registry.md" not in content
 
 
-def test_repo_selection_policy_prefers_explicit_or_current_repo():
-    """Verify the canonical repo-selection policy prefers explicit/local selection."""
+def test_repo_selection_policy_prefers_explicit_current_repo_and_repos_md():
+    """Verify the canonical repo-selection policy prefers explicit/current selection, then REPOS.md."""
     content = REPO_SELECTION.read_text()
     assert "explicit `--repo` wins" in content
     assert "current repo is the only implicit default" in content
-    assert "Be explicit first, then use current repo, then consult the registry, then ask directly" in content
-    assert "Alias match" in content
-    assert "Recent repos" in content
-    assert "Bounded local discovery" in content
+    assert "REPOS.md" in content
+    assert "Be explicit first, then use current repo, then consult `REPOS.md` if available, then ask directly" in content
+    assert "Alias match" not in content
+    assert "Recent repos" not in content
+    assert "Bounded local discovery" not in content
 
 
 def test_preflight_repo_selection_is_direct_not_discovery_heavy():
@@ -88,7 +89,7 @@ def test_preflight_repo_selection_is_direct_not_discovery_heavy():
     assert "accept `--repo <path>` immediately when provided" in content
     assert "ask the user directly for a repo path" in content
     assert "installed skills, bundled skills, or GitHub" in content
-    assert "references/shared/repo-registry.md" in content
+    assert "references/shared/repo-registry.md" not in content
 
 
 def test_mode_policy_matrix_covers_all_modes():
@@ -101,7 +102,7 @@ def test_mode_policy_matrix_covers_all_modes():
 def test_preflight_test_suite_check_is_mode_aware():
     """Verify test-suite handling differs by mode."""
     content = PREFLIGHT.read_text()
-    assert "## Check 3 — Test suite (mode-aware)" in content
+    assert "## Check 4 — Test suite (mode-aware)" in content
     assert "references/shared/mode-policy.md" in content
     assert "🚀/🐛/♻️/🧪 without tests" in content
     assert "🔍/📖 without tests" in content
@@ -120,7 +121,7 @@ def test_skill_references_canonical_policy_files():
     assert "references/shared/pr-feedback-format.md" in content
     assert "references/shared/release-readiness.md" in content
     assert "references/shared/delegation.md" in content
-    assert "references/shared/repo-registry.md" in content
+    assert "references/shared/repo-registry.md" not in content
     assert "tasks/state.json" in content
     assert "Git not initialized → STOP" in content
 
@@ -131,6 +132,7 @@ def test_skill_invocation_uses_ptopr_and_repo_option():
     assert "/ptopr" in content
     assert "--repo" in content
     assert "am nevoie de repo" in content
+    assert "/ptopr --repo ?:" not in content
     assert "scan skills + workspace" not in content
     bare_ptop = re.findall(r"/ptop(?!r)\b", content)
     assert len(bare_ptop) == 0, f"Found old /ptop references: {bare_ptop}"
@@ -142,11 +144,14 @@ def test_readme_is_aligned_with_ptopr_and_repo_selection_flow():
     assert "/ptopr" in content
     assert "/ptopr --repo /path/to/repo" in content
     assert "REPOS.md" in content
-    assert "Registry: yes/no" in content
+    assert "Recommended fields per entry:" in content
+    for field in ["- Path", "- Alias", "- Type", "- Status"]:
+        assert field in content
+    assert "Registry: yes/no" not in content
     assert "PR Feedback" in content
-    assert "shows a repo selection menu" in content
-    assert "known repos from the registry" in content
-    assert "bounded local discovery" in content
+    assert "prefers the local repo map in `REPOS.md`" in content
+    assert "known repos from the registry" not in content
+    assert "bounded local discovery" not in content
     assert "scan skills + workspace" not in content
     bare_ptop = re.findall(r"/ptop(?!r)\b", content)
     assert len(bare_ptop) == 0, f"Found old /ptop references in README: {bare_ptop}"
@@ -185,20 +190,8 @@ def test_repo_selection_policy_has_local_fallback_rules():
     content = REPO_SELECTION.read_text()
     assert "Fallback rules" in content
     assert "If shell access is restricted" in content
-    assert "do not search broadly; use the registry or ask for a repo path" in content
+    assert "do not search broadly; consult `REPOS.md` if it exists, otherwise ask for a repo path" in content
     assert "unknown fields" in content
-
-
-def test_repo_registry_file_exists():
-    """Verify the repo registry reference document exists."""
-    content = REPO_REGISTRY.read_text()
-    assert "# Repo Registry Design" in content
-    assert "~/.openclaw/workspace/prompt-to-pr-repo-registry.json" in content
-    assert "roots" in content
-    assert "aliases" in content
-    assert "recentRepos" in content
-    assert "lastActiveRepo" in content
-    assert "REPOS.md" in content
 
 
 def test_no_repo_onboarding_doc_exists_and_recommends_creation():
@@ -207,7 +200,8 @@ def test_no_repo_onboarding_doc_exists_and_recommends_creation():
     assert "prompt-to-pr still requires a Git repo" in content
     assert "create a new local repo" in content
     assert "REPOS.md" in content
-    assert "Registry: yes/no" in content
+    assert "Registry: yes/no" not in content
+    assert "minimal human-readable inventory" in content
 
 
 def test_review_mode_mentions_missing_tests_are_warning_only():
