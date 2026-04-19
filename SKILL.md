@@ -36,13 +36,13 @@ to a ready-to-merge Pull Request, with explicit approval checkpoints and active 
 
 These rules are non-negotiable. Violating any of them is a bug in your execution, not a creative choice.
 
-1. **Context banner in EVERY assistant turn.** During the entire ptop workflow, EVERY response the assistant sends must begin with the context banner — not just at phase starts. Call `session_status`, get the real token count, and display an operational banner that includes used tokens, safe working budget, next-step size, and pressure indicator. Example:
+1. **Context banner in EVERY assistant turn.** During the entire ptop workflow, EVERY response the assistant sends must begin with the context banner — not just at phase starts. Call `session_status` and display an operational banner that separates the available signals instead of conflating them: **Context** (operational pressure / session load), **Tokens** (runtime token telemetry), safe working budget, next-step size, and pressure indicator. Example:
    ```
-   [FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: 165k used · Safe: 200k · Next: MEDIUM · 🟠
+   [FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: 165k/200k · Tokens: 38k in · Next: MEDIUM · 🟠
    ```
    This applies to all turns: questions, plan presentations, code output, checkpoint prompts, test results, verify summaries. The user must always see budget status. **First line of every message, no exceptions.**
 
-2. **Real token counts only.** Never estimate. Never guess. Never use a cached value. Call `session_status` and use the `Tokens: Xk in` value from the result.
+2. **Real runtime signals only.** Never estimate. Never guess. Never use a cached value. Call `session_status` and read the values it actually exposes. Do **not** present `Tokens: Xk in` as if it were the same thing as `Context: Yk/200k`.
 
 3. **Checkpoints are hard stops.** After PLAN and after VERIFY, stop and wait for explicit user approval. No exceptions.
 
@@ -116,9 +116,9 @@ Before any major read/output/test action, classify the expected next step as tin
 
 **Never read the entire codebase. Always: map → filter → read selectively.**
 
-Display budget banner after scan:
+Display budget banner after scan using honest signal labels, for example:
 ```
-[CONTEXT]  ████░░░░░░  42k/200k (21%)
+[CONTEXT]  Context: 42k/200k · Tokens: 18k in · Next: SMALL · 🟢
 ```
 
 ---
@@ -199,11 +199,12 @@ After triage, load the relevant mode file and follow it exclusively:
 ### Phase banner
 Display at every phase transition:
 ```
-[FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: ███░░░░░░░  62k/200k (31%)
+[FAZA N/M — PHASE NAME  MODE_EMOJI  MODE_NAME]  Context: 62k/200k · Tokens: 31k in · Next: SMALL · 🟡
 ```
 
-**IMPORTANT:** Token count must come from `session_status`, never estimated.
-Call `session_status` at the START of every phase and use the real `Tokens: Xk in` value as the session-pressure signal.
+**IMPORTANT:** Runtime values must come from `session_status`, never estimated.
+When available, treat `Context: Xk/200k` as the primary operational pressure signal and `Tokens: Yk in` as secondary telemetry.
+If the two diverge materially, do not flatten them into one fake number; surface both signals honestly.
 Treat the safe working budget as an operational limit, not a claim about exact model maximum context.
 Context accumulates conservatively across phases and cycles unless the runtime clearly indicates otherwise.
 
@@ -274,6 +275,7 @@ If user says "resume", "continuă", "reia":
 ### Context monitoring
 Load `references/shared/context-budget.md` and `references/shared/context-policy.md`.
 Use both current session pressure and expected next-step size.
+Do not treat red as an automatic stop; save state, set `nextAction`, and stop only when the policy requires it.
 - At yellow → switch to concise mode
 - At orange + tiny/small next step → continue after proactive save
 - At orange + medium/large next step → summarize first, save resumable state, then continue

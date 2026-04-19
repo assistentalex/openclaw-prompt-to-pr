@@ -1,15 +1,15 @@
 {
   "version": 3,
-  "mode": "feature",
+  "mode": "fix",
   "repo": "/home/adminul/.openclaw/skills/prompt-to-pr",
-  "branch": "feat/prompt-to-pr-v3-context-control",
+  "branch": "feat/context-banner-dual-signal",
   "phase": {
     "shared": "done",
-    "mode": "implement",
-    "step": "batch-2-next-step-and-phase-aware-complete"
+    "mode": "verify",
+    "step": "checkpoint-2-awaiting-approval"
   },
-  "task": "Build prompt-to-pr v3 adaptive context control",
-  "status": "active",
+  "task": "Fix prompt-to-pr context banner so it stops conflating Tokens with Context and shows honest pressure signals",
+  "status": "waiting-approval",
   "approvals": {
     "checkpoint1": true,
     "checkpoint2": false
@@ -17,25 +17,28 @@
   "clarify": {
     "questionsAsked": [],
     "answers": [
-      "Design a v3 plan for the context bar/control system",
-      "Implement it after approval",
-      "Continue with Batch 2 because it is the practical part"
+      "Investigate why prompt-to-pr showed low used-token numbers while session status showed much higher context pressure",
+      "Decide whether the feature should be removed or fixed",
+      "Continue with a practical fix plan if the feature still helps"
     ],
-    "answersSummary": "Need v3 adaptive context control with practical next-step and phase-aware logic",
+    "answersSummary": "Keep the feature, but redesign it so banner semantics are truthful and pressure is based on the right signal",
     "assumptions": [
-      "Implement v3 in resumable batches",
-      "Batch 2 should stay minimal and practical, not overengineered"
+      "The current problem is primarily a prompt-to-pr wording/policy defect, not proof that OpenClaw itself is entirely broken",
+      "A good fix should preserve the context-control feature while making banner semantics explicit",
+      "Current repo tests should be updated alongside docs/policy wording"
     ],
-    "openQuestions": []
+    "openQuestions": [
+      "Whether final pressure logic should be context-first or dual-signal with divergence warning"
+    ]
   },
   "plan": {
-    "summary": "Batch 2 complete: next-step heuristic and phase-aware rules are now canonical and tested",
+    "summary": "Patch prompt-to-pr so it distinguishes Tokens from Context, updates banner wording, and documents how divergence should be handled",
     "tasks": [
-      "Add minimal next-step heuristic mapping",
-      "Add phase-aware context behavior",
-      "Wire scan/compression docs to heuristic",
-      "Update SKILL monitoring rules",
-      "Validate docs/tests"
+      "Update SKILL.md banner contract and mandatory rules",
+      "Update shared context-policy/context-budget docs to treat Context as risk signal and Tokens as secondary telemetry",
+      "Add explicit divergence handling guidance when Tokens and Context differ materially",
+      "Adjust smoke tests to lock in the new wording/semantics",
+      "Run pytest and verify docs/tests stay green"
     ],
     "risk": "medium",
     "confidence": "high",
@@ -44,28 +47,29 @@
   },
   "files": {
     "touched": [
+      "SKILL.md",
       "references/shared/context-policy.md",
       "references/shared/context-budget.md",
-      "references/shared/context-scan.md",
-      "references/shared/compression.md",
-      "SKILL.md",
       "tests/test_smoke.py",
       "tasks/state.json",
       "tasks/todo.md"
     ],
     "planned": [
-      "references/shared/state-system.md"
+      "SKILL.md",
+      "references/shared/context-policy.md",
+      "references/shared/context-budget.md",
+      "tests/test_smoke.py"
     ]
   },
   "tests": {
-    "baseline": "pytest -q",
-    "latest": "32 passed",
+    "baseline": "not run separately before this fix",
+    "latest": "pytest -q → 34 passed in 0.09s",
     "coverage": "n/a"
   },
   "verify": {
-    "summary": "Batch 2 docs/tests are green; next-step and phase-aware rules are now part of the canonical policy",
-    "readyForPr": false
+    "summary": "Docs/tests updated so prompt-to-pr no longer conflates Tokens with Context; pytest is green",
+    "readyForPr": true
   },
-  "nextAction": "Decide whether to do Batch 3 save-state trigger polish now or stop after the useful core",
-  "updatedAt": "2026-04-09T17:37:00Z"
+  "nextAction": "Wait for checkpoint 2 approval before creating branch, commit, and PR for the context banner honesty fix",
+  "updatedAt": "2026-04-15T23:07:00Z"
 }
