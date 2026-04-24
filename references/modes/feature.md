@@ -67,6 +67,14 @@ Load `references/shared/plan-format.md` for the todo.md structure.
 
 **Wait for explicit approval before proceeding.**
 
+### Auto-approve mode
+If `NIGHT_SHIFT_AUTO_APPROVE=1` is set in the environment, the agent **auto-approves** this checkpoint with a logged note instead of waiting for user input. This is designed for autonomous pipelines (e.g. Night Shift) where no human is present.
+
+Behavior in auto-approve mode:
+- Log: "Auto-approved (night shift mode) — proceeding with implementation"
+- Continue immediately to Phase 3 (IMPLEMENT)
+- Stash before IMPLEMENT still runs normally
+
 ---
 
 ## Phase 3 — IMPLEMENT
@@ -235,6 +243,15 @@ Default shape:
   Reply: yes / request changes / abort
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+### Auto-approve mode
+If `NIGHT_SHIFT_AUTO_APPROVE=1` is set in the environment, the agent **auto-approves** this checkpoint with a logged note instead of waiting for user input.
+
+Behavior in auto-approve mode:
+- Log: "Auto-approved (night shift mode) — creating PR"
+- Continue immediately to Phase 6 (PR)
+- If tests failed after 2 retries → STOP and report failure (do NOT auto-approve past failures)
+- Stash drop still runs normally after successful PR
 
 ---
 

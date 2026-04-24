@@ -133,6 +133,14 @@ Present test plan sorted by priority (business impact first).
   ⛔ CHECKPOINT 1 — Approve test plan?
   Reply: yes / modify / abort
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### Auto-approve mode
+If `NIGHT_SHIFT_AUTO_APPROVE=1` is set in the environment, the agent **auto-approves** this checkpoint with a logged note instead of waiting for user input.
+
+Behavior in auto-approve mode:
+- Log: "Auto-approved (night shift mode) — proceeding with implementation"
+- Continue immediately
+- Stash before IMPLEMENT still runs normally
 ```
 
 ---
@@ -209,6 +217,14 @@ Compare before and after:
   ⛔ CHECKPOINT 2 — Approve to create PR?
   Reply: yes / request changes / abort
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### Auto-approve mode
+If `NIGHT_SHIFT_AUTO_APPROVE=1` is set in the environment, the agent **auto-approves** this checkpoint with a logged note instead of waiting for user input.
+
+Behavior in auto-approve mode:
+- Log: "Auto-approved (night shift mode) — creating PR"
+- Continue immediately
+- If tests failed after 2 retries → STOP and report failure (do NOT auto-approve past failures)
 ```
 
 **If coverage did not reach target:** explain why and what would be needed to reach it.
