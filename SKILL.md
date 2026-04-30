@@ -215,6 +215,17 @@ Every mode has exactly **2 hard stops** requiring explicit user approval in chat
 
 Never proceed past a checkpoint on assumption. Wait for: "yes", "ok", "approved", "go", "da", "merge".
 
+### Auto-approve mode (night shift / CI)
+When `NIGHT_SHIFT_AUTO_APPROVE=1` is set in the environment, the agent **auto-approves** both checkpoints with a logged note instead of waiting for user input. This is designed for autonomous pipelines (e.g. Night Shift) where no human is present.
+
+Behavior in auto-approve mode:
+- CHECKPOINT 1: Auto-approve with note: "Auto-approved (night shift mode) — proceeding with implementation"
+- CHECKPOINT 2: Auto-approve with note: "Auto-approved (night shift mode) — creating PR"
+- Stash/drop logic still runs normally
+- If IMPLEMENT fails tests after 2 retries → STOP and report failure (do NOT auto-approve past failures)
+
+To enable: export `NIGHT_SHIFT_AUTO_APPROVE=1` before invoking the skill.
+
 ### Undo at checkpoints
 When the user rejects at a checkpoint (says "no", "nu", "reject", "request changes"):
 
